@@ -9,7 +9,7 @@ const buttonDelete = document.querySelector(".card__delete-button"); // кноп
 const buttonLike = cardContainer.querySelector(".card__like-button"); // кнопка лайкнуть песню
 
 // @todo: Функция создания карточки
-function createCard(detailsCard,removeCard) {
+function createCard(detailsCard, removeCard) {
   const containerElement = templateContainer
     .querySelector(".card")
     .cloneNode(true); // создает клон карточки
@@ -21,7 +21,6 @@ function createCard(detailsCard,removeCard) {
   titleElement.textContent = detailsCard.name;
   const buttonDelete = containerElement.querySelector(".card__delete-button"); // кнопка удалить песню
   buttonDelete.addEventListener("click", () => removeCard(containerElement));
-  cardContainer.append(containerElement); // Добавляем карточку в контейнер
   return containerElement;
 }
 // @todo: Функция удаления карточки
