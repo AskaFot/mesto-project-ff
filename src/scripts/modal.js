@@ -5,8 +5,8 @@
 // функция-обработчик события клика по оверлею;
 
 
-import {createCard} from "./card.js";
-import { editElement, formEdit,editSave, buttonEdit, editClose, cardElement, formCard, buttonAdd, cardClose, popupType, popupImage, popupCaption, imgClose, cardContainer} from "./variables.js";
+import {createCard,removeCard, likeCard} from "./card.js";
+import { editElement, formEdit, popupType, popupImage, popupCaption, cardContainer} from "./variables.js";
 
 
 // Функция отправки формы
@@ -27,49 +27,32 @@ export function handleFormSubmit(evt) {
   closeModal(editElement); // Закрываем нужный попап
 }
 
-/// создание карточки 
-function handleForm(evt) {
-  evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-  // Получите значение полей 
-  // const formPlace = evt.target;
-  
-  // что вставляем
-  const nameCard = formCard.querySelector('input[name="place-name"]');
-  const fotoCard = formCard.querySelector('input[name="link"]');
-  
-  // куда вставляем
-  const cardInsert = document.querySelector('.card__title');
-  const fotoInsert = document.querySelector('.card__image');
+export function handleForm(evt) {
+  evt.preventDefault(); // Отменяем стандартную отправку формы
 
-  // Вставьте новые значения с помощью textContent
-  cardInsert.textContent = nameCard.value;
-  fotoInsert.textContent = fotoCard.value;
-  // jobInput и nameInput из свойства value
-  // Выберите элементы, куда должны быть вставлены значения полей
-//   cardSave.addEventListener("click", () =>
-//      createCard(cardSave),
-//   // addCard(cardSave)
-// );
-  closeModal(cardElement);
+  const nameCard = evt.target.querySelector('input[name="place-name"]');
+  const fotoCard = evt.target.querySelector('input[name="link"]');
+
+  // Создаём карточку
+  const newCard = createCard(
+    { name: nameCard.value, link: fotoCard.value },
+    removeCard,
+    likeCard
+  );
+  // Добавляем карточку в контейнер
+    cardContainer.prepend(newCard); // prepend - добавляет в начало, append - в конец
+
+  // Очищаем форму
+  nameCard.value = "";
+  fotoCard.value = "";
+
+  // Закрываем модальное окно
+  const popup = document.querySelector(".popup_is-opened");
+  closeModal(popup);
 }
 
 
-  // function addCard(cardInsert, fotoInsert) {
-  //   cardItem.insertAdjacentHTML('beforestart', `
-  //       <li class="places__item card">
-  //   <img class="card__image" src="${fotoInsert /* это тоже данные от пользователя */}"/>
-  //   <button type="button" class="card__delete-button"></button>
-  //   <div class="card__description">
-  //     <h2 class="card__title"> ${cardInsert /* это тоже данные от пользователя */}
-  //     </h2>
-  //     <button type="button" class="card__like-button"></button>
-  //   </div>
-  // </li>
-  //   `);
-  // }
-
-
-function openFoto(evt) {
+export function openFoto(evt) {
   const clickedImage = evt.target; // Определяем, куда кликнули
 
   if (clickedImage.classList.contains('card__image')) {
@@ -90,8 +73,7 @@ function openFoto(evt) {
 
 // Функции открытия/закрытия модального окна для всего 
 // если клик по кнопке крестик или по любой
-//  другой области не равной div то 
-
+//  другой области не равной div 
 
 document.addEventListener('click', function (event) {
   const modals = document.querySelectorAll('.popup'); // Получаем все модальные окна
@@ -126,23 +108,4 @@ export function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
   }, 300);
 }
-
-
-// Открытие и закрытие формы редактирования профиля
-buttonEdit.addEventListener('click', () => openModal(editElement));
-editClose.addEventListener('click', () => closeModal(editElement));
-
-// Открытие и закрытие формы создания карточки
-buttonAdd.addEventListener('click', () => openModal(cardElement));
-cardClose.addEventListener('click', () => closeModal(cardElement));
-
-// Открытие и закрытие картинки
-imgClose.addEventListener('click', () => closeModal(popupType));
-
-
-// Обработчики форм
-formEdit.addEventListener('submit', handleFormSubmit);
-cardElement.addEventListener('submit', handleForm);
-cardContainer.addEventListener('click', openFoto);
-
 

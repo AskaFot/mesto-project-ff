@@ -7,12 +7,24 @@
 
 
 import "../pages/index.css";
-import { createCard, removeCard, likeCard } from './card.js';
-import {initialCards} from "./cards.js";
-import { openModal, closeModal} from "./modal.js";
+import { openModal, closeModal, handleFormSubmit, handleForm,openFoto} from "./modal.js";
+import { editElement, formEdit, buttonEdit, editClose, cardElement, buttonAdd, cardClose, popupType,  imgClose, cardContainer} from "./variables.js";
 
 
 
+// Открытие и закрытие формы редактирования профиля
+buttonEdit.addEventListener('click', () => openModal(editElement));
+editClose.addEventListener('click', () => closeModal(editElement));
+
+// Открытие и закрытие формы создания карточки
+buttonAdd.addEventListener('click', () => openModal(cardElement));
+cardClose.addEventListener('click', () => closeModal(cardElement));
+
+// Открытие и закрытие картинки
+imgClose.addEventListener('click', () => closeModal(popupType));
 
 
-
+// Обработчики форм
+formEdit.addEventListener('submit', handleFormSubmit);
+cardElement.addEventListener('submit', handleForm);
+cardContainer.addEventListener('click', openFoto);
