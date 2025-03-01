@@ -91,7 +91,17 @@ document.addEventListener('click', function (event) {
     if (modal.classList.contains('popup_is-opened')) {
       closeModal(modal);
     }
+  
   });
+});
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    const openModal = document.querySelector(".popup_is-opened"); // Найти открытый popup
+    if (openModal) {
+      closeModal(openModal);
+    }
+  }
 });
 
 export function openModal(popup) {
@@ -108,4 +118,3 @@ export function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
   }, 300);
 }
-
