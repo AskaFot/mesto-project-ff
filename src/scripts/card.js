@@ -2,16 +2,6 @@
 // функция создания карточки, функции-обработчики 
 // событий удаления и лайка карточки;
 
-import { cardContainer} from "./variables.js";
-import {initialCards} from "./cards.js";
-
-
-// @todo: Вывести карточки на страницу
-initialCards.forEach((detailsCard) => {
-  const cardElement = createCard(detailsCard, removeCard, likeCard);
-  cardContainer.append(cardElement);
-});
-
 
 export function createCard(detailsCard, removeCard, likeCard ) {
    const templateContainer = document.querySelector("#card-template").content; // создает карточку

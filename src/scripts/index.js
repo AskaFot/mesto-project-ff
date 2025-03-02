@@ -7,13 +7,29 @@
 
 
 import "../pages/index.css";
-import { openModal, closeModal, handleFormSubmit, handleForm,openFoto} from "./modal.js";
-import { editElement, formEdit, buttonEdit, editClose, cardElement, buttonAdd, cardClose, popupType,  imgClose, cardContainer} from "./variables.js";
 
+import { 
+  openModal, closeModal,clickOvarlay
+} from "./modal.js";
+
+import { 
+  editElement, formEdit, buttonEdit, editClose, jobtofil, namePtofil,
+  cardElement, buttonAdd, cardClose, popupType,  nameInput,
+  imgClose, cardContainer, popupImage, popupCaption, jobInput 
+} from "./variables.js";
+
+import { initialCards } from "./cards.js";
+
+import { createCard, removeCard, likeCard } from "./card.js";
 
 
 // Открытие и закрытие формы редактирования профиля
-buttonEdit.addEventListener('click', () => openModal(editElement));
+buttonEdit.addEventListener('click', () => {
+  nameInput.value = namePtofil.textContent; // Заполняем инпуты текущими данными
+  jobInput.value = jobtofil.textContent;
+  openModal(editElement)
+});
+
 editClose.addEventListener('click', () => closeModal(editElement));
 
 // Открытие и закрытие формы создания карточки
@@ -26,5 +42,67 @@ imgClose.addEventListener('click', () => closeModal(popupType));
 
 // Обработчики форм
 formEdit.addEventListener('submit', handleFormSubmit);
-cardElement.addEventListener('submit', handleForm);
+cardElement.addEventListener('submit', handleProfileFormSubmit);
 cardContainer.addEventListener('click', openFoto);
+
+// @todo: Вывести карточки на страницу
+initialCards.forEach((detailsCard) => {
+  const cardElement = createCard(detailsCard, removeCard, likeCard);
+  cardContainer.append(cardElement);
+});
+
+// Функция отправки формы
+export function handleFormSubmit(evt) {
+  evt.preventDefault();
+  namePtofil.textContent = nameInput.value;
+  jobtofil.textContent = jobInput.value;
+
+  closeModal(editElement); // Закрываем нужный попап
+};
+
+// Функция отправки поста
+export function handleProfileFormSubmit(evt) {
+  evt.preventDefault(); // Отменяем стандартную отправку формы
+
+  const nameCard = evt.target.querySelector('input[name="place-name"]');
+  const fotoCard = evt.target.querySelector('input[name="link"]');
+
+  // Создаём карточку
+  const newCard = createCard(
+    { name: nameCard.value, link: fotoCard.value },
+    removeCard,
+    likeCard
+  );
+  // Добавляем карточку в контейнер
+    cardContainer.prepend(newCard); // prepend - добавляет в начало, append - в конец
+
+  // Очищаем форму
+  // nameCard.value = "";
+  // fotoCard.value = "";
+  evt.target.reset()
+  // Закрываем модальное окно
+  const popup = document.querySelector(".popup_is-opened");
+  closeModal(popup);
+};
+
+// Функция открытия фото
+export function openFoto(evt) {
+  const clickedImage = evt.target; // Определяем, куда кликнули
+
+  if (clickedImage.classList.contains('card__image')) {
+
+    // Находим карточку, к которой относится изображение
+    const card = clickedImage.closest('.card'); // Ищем родителя `.card`
+    const cardTitle = card ? card.querySelector('.card__title') : null; // Заголовок карточки
+
+    // Устанавливаем картинку и подпись
+    popupImage.src = clickedImage.src;
+    popupImage.alt = cardTitle.textContent; // "Фотография";
+    popupCaption.textContent = cardTitle.textContent //"Без описания";
+    // Показываем попап
+    popupType.classList.add('popup_is-opened');
+  }
+};
+
+document.addEventListener('click', clickOvarlay);
+
