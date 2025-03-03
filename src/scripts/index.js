@@ -9,7 +9,7 @@
 import "../pages/index.css";
 
 import { 
-  openModal, closeModal,clickOvarlay
+  openPopup, closePopup,clickOvarlay
 } from "./modal.js";
 
 import { 
@@ -27,23 +27,22 @@ import { createCard, removeCard, likeCard } from "./card.js";
 buttonEdit.addEventListener('click', () => {
   nameInput.value = namePtofil.textContent; // Заполняем инпуты текущими данными
   jobInput.value = jobtofil.textContent;
-  openModal(editElement)
+  openPopup (editElement)
 });
 
-editClose.addEventListener('click', () => closeModal(editElement));
+editClose.addEventListener('click', () => closePopup(editElement));
 
 // Открытие и закрытие формы создания карточки
-buttonAdd.addEventListener('click', () => openModal(cardElement));
-cardClose.addEventListener('click', () => closeModal(cardElement));
+buttonAdd.addEventListener('click', () => openPopup(cardElement));
+cardClose.addEventListener('click', () => closePopup(cardElement));
 
 // Открытие и закрытие картинки
-imgClose.addEventListener('click', () => closeModal(popupType));
+imgClose.addEventListener('click', () => closePopup(popupType));
 
 
 // Обработчики форм
-formEdit.addEventListener('submit', handleFormSubmit);
-cardElement.addEventListener('submit', handleProfileFormSubmit);
-cardContainer.addEventListener('click', openFoto);
+formEdit.addEventListener('submit', handleProfileFormSubmit);
+cardElement.addEventListener('submit', processesCardCreation);
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach((detailsCard) => {
@@ -52,16 +51,16 @@ initialCards.forEach((detailsCard) => {
 });
 
 // Функция отправки формы
-export function handleFormSubmit(evt) {
+export function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   namePtofil.textContent = nameInput.value;
   jobtofil.textContent = jobInput.value;
 
-  closeModal(editElement); // Закрываем нужный попап
+  closePopup(editElement); // Закрываем нужный попап
 };
 
 // Функция отправки поста
-export function handleProfileFormSubmit(evt) {
+export function  processesCardCreation(evt) {
   evt.preventDefault(); // Отменяем стандартную отправку формы
 
   const nameCard = evt.target.querySelector('input[name="place-name"]');
@@ -75,14 +74,10 @@ export function handleProfileFormSubmit(evt) {
   );
   // Добавляем карточку в контейнер
     cardContainer.prepend(newCard); // prepend - добавляет в начало, append - в конец
-
-  // Очищаем форму
-  // nameCard.value = "";
-  // fotoCard.value = "";
   evt.target.reset()
   // Закрываем модальное окно
   const popup = document.querySelector(".popup_is-opened");
-  closeModal(popup);
+  closePopup(popup);
 };
 
 // Функция открытия фото
@@ -100,8 +95,7 @@ export function openFoto(evt) {
     popupImage.alt = cardTitle.textContent; // "Фотография";
     popupCaption.textContent = cardTitle.textContent //"Без описания";
     // Показываем попап
-    popupType.classList.add('popup_is-opened');
-  }
+    openPopup (popupType)  }
 };
 
 document.addEventListener('click', clickOvarlay);

@@ -4,7 +4,7 @@
 //  события нажатия Esc и 
 // функция-обработчик события клика по оверлею;
 
-export function openModal(popup) {
+export function openPopup (popup) {
   popup.classList.add('popup_is-opened');
   setTimeout(() => {
     popup.classList.add('popup_is-animated');
@@ -12,7 +12,7 @@ export function openModal(popup) {
   document.addEventListener('keydown', handleEscape); 
 };
 
-export function closeModal(popup) {
+export function closePopup(popup) {
   popup.classList.remove('popup_is-animated');
 
   setTimeout(() => {
@@ -28,10 +28,10 @@ export function clickOvarlay(event) {
   popups.forEach((popup) => {
       popup.addEventListener('mousedown', (evt) => {
           if (evt.target.classList.contains('popup_is-opened')) {
-            closeModal(popup)
+            closePopup(popup)
           }
           if (evt.target.classList.contains('popup__close')) {
-            closeModal(popup)
+            closePopup(popup)
           }
       })
   })
@@ -40,6 +40,6 @@ export function clickOvarlay(event) {
 export function handleEscape(evt) {
     if (evt.key === 'Escape') {
       const openedPopup = document.querySelector('.popup_is-opened')
-      closeModal(openedPopup)
+      closePopup(openedPopup)
     }
   };
