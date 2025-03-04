@@ -2,10 +2,6 @@
 // функция создания карточки, функции-обработчики 
 // событий удаления и лайка карточки;
 
-import { cardContainer } from "./variables.js";
-
-import { openFoto } from "./index.js";
-
 
 export function createCard(detailsCard, removeCard, likeCard ) {
    const templateContainer = document.querySelector("#card-template").content; // создает карточку
@@ -22,7 +18,7 @@ export function createCard(detailsCard, removeCard, likeCard ) {
   const buttonLike = containerElement.querySelector('.card__like-button');
   buttonLike.addEventListener("click", () => likeCard(buttonLike));
   buttonDelete.addEventListener("click", () => removeCard(containerElement));
-  cardContainer.addEventListener('click', openFoto);
+  // cardContainer.addEventListener('click', openFoto);
   return containerElement;
 }
 
