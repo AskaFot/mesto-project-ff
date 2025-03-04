@@ -63,7 +63,6 @@ export function handleProfileFormSubmit(evt) {
 // Функция отправки поста
 export function  processesCardCreation(evt) {
   evt.preventDefault(); // Отменяем стандартную отправку формы
-
   const nameCard = evt.target.querySelector('input[name="place-name"]');
   const fotoCard = evt.target.querySelector('input[name="link"]');
 
@@ -77,7 +76,7 @@ export function  processesCardCreation(evt) {
     cardContainer.prepend(newCard); // prepend - добавляет в начало, append - в конец
   evt.target.reset()
   // Закрываем модальное окно
-  const popup = document.querySelector(".popup_is-opened");
+  const popup = document.querySelector('.popup_is-opened');
   closePopup(popup);
 };
 
