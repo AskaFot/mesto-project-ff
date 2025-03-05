@@ -38,6 +38,7 @@ cardClose.addEventListener('click', () => closePopup(cardElement));
 
 // Открытие и закрытие картинки
 imgClose.addEventListener('click', () => closePopup(popupType));
+cardContainer.addEventListener('click', openFoto);
 
 
 // Обработчики форм
@@ -46,8 +47,7 @@ cardElement.addEventListener('submit', processesCardCreation);
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach((detailsCard) => {
-  const cardElement = createCard(detailsCard, removeCard, likeCard);
-  cardContainer.addEventListener('click', openFoto);
+const cardElement = createCard(detailsCard, removeCard, likeCard, openFoto);  cardContainer.addEventListener('click', openFoto);
   cardContainer.append(cardElement);
 });
 
