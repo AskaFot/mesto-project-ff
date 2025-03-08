@@ -3,7 +3,7 @@
 // событий удаления и лайка карточки;
 
 
-export function createCard(detailsCard, removeCard, likeCard ) {
+export function createCard(detailsCard, removeCard, likeCard, openFoto ) {
    const templateContainer = document.querySelector("#card-template").content; // создает карточку
   const containerElement = templateContainer
     .querySelector(".card")
@@ -18,7 +18,7 @@ export function createCard(detailsCard, removeCard, likeCard ) {
   const buttonLike = containerElement.querySelector('.card__like-button');
   buttonLike.addEventListener("click", () => likeCard(buttonLike));
   buttonDelete.addEventListener("click", () => removeCard(containerElement));
-  // cardContainer.addEventListener('click', openFoto);
+  imageElement.addEventListener("click", openFoto);
   return containerElement;
 }
 

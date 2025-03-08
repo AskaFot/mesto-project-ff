@@ -47,7 +47,8 @@ cardElement.addEventListener('submit', processesCardCreation);
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach((detailsCard) => {
-const cardElement = createCard(detailsCard, removeCard, likeCard, openFoto);  cardContainer.addEventListener('click', openFoto);
+const cardElement = createCard(detailsCard, removeCard, likeCard, openFoto); 
+//  cardContainer.addEventListener('click', openFoto);
   cardContainer.append(cardElement);
 });
 
