@@ -70,7 +70,8 @@ export function  processesCardCreation(evt) {
   const newCard = createCard(
     { name: nameCard.value, link: fotoCard.value },
     removeCard,
-    likeCard
+    likeCard,
+    openFoto
   );
   // Добавляем карточку в контейнер
     cardContainer.prepend(newCard); // prepend - добавляет в начало, append - в конец
