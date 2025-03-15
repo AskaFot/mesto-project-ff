@@ -46,8 +46,8 @@
           id="name-input"
            minlength="2" 
            maxlength="40" 
-           pattern="^[a-zA-Z]+$"
-            data-error-message="Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы"
+           pattern="[A-Za-zА-Яа-яЁё\-\s]+" 
+           data-error-message="Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы"
              required
             name="popup_name" 
             class="popup__input popup__input_type_name" 
@@ -61,7 +61,8 @@
            id="job-input"
             maxlength="200" 
             required 
-            pattern="^[a-zA-Z]+$"
+            pattern="[A-Za-zА-Яа-яЁё\-\s]+" 
+            
             data-error-message="Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы"
           
             name="description"
@@ -87,7 +88,7 @@
           id="place-input"
           name="place-name" 
           minlength="2" 
-          pattern="^[a-zA-Z]+$"
+          pattern="[A-Za-zА-Яа-яЁё\-\s]+" 
           maxlength="30"
            class="popup__input popup__input_type_card-name" 
           data-error-message="Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы"
