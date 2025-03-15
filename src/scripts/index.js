@@ -27,21 +27,14 @@ import {
   popupCaption,
   jobInput,
   profileForm,
-  cardForm
+  cardForm,
+  popupValidation
 } from "./variables.js";
 
 import { initialCards } from "./cards.js";
 import { createCard, removeCard, likeCard } from "./card.js";
-import {
-   showInputError,
-  hideInputError,
-  isValid,
-  setEventListeners,
-  enableValidation,
-  hasInvalidInput,
-  toggleButtonState,
-  clearValidation
- } from "validation.js";
+import { enableValidation, clearValidation } from './validation.js';
+
 
 
 
@@ -124,7 +117,7 @@ document.addEventListener("click", clickOvarlay);
 
 
 
-// Объект настроек
+// // Объект настроек
 const validationConfig = {
   formSelector: '.popup__form', // Селектор для форм
   inputSelector: '.popup__input', // Селектор для полей ввода
@@ -134,11 +127,11 @@ const validationConfig = {
   errorClass: 'popup__error_visible' // Класс для сообщения об ошибке
 };
 
-// // Включаем валидацию
-// enableValidation(validationConfig);
+// // // Включаем валидацию
+enableValidation(validationConfig);
 
-// При открытии формы профиля
-clearValidation(profileForm, validationConfig);
+// // При открытии формы профиля
+clearValidation(popupValidation, validationConfig);
 
-// При открытии формы добавления карточки
-clearValidation(cardForm, validationConfig);
+// // При открытии формы добавления карточки
+// clearValidation(cardForm, validationConfig);

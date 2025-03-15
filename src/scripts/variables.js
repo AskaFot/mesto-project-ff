@@ -6,6 +6,11 @@ export const templateContainer = document.querySelector("#card-template").conten
 // @todo: DOM узлы
 export const container = document.querySelector(".content");
 export const cardContainer = container.querySelector(".places__list");
+export const profileForm = document.querySelector('.popup__form_profile');
+export const cardForm = document.querySelector('.popup__form_card');
+export const popupValidation = document.querySelector('.popup__form');
+
+
 
 // Блок редактирования профиля
 export const editElement = document.querySelector('.popup_type_edit');
