@@ -7,7 +7,7 @@
 
 import "../pages/index.css";
 
-import { openPopup, closePopup, clickOvarlay } from "./modal.js";
+import { openPopup, closePopup, clickOvarlay,handleEscape } from "./modal.js";
 
 import {
   editElement,
@@ -24,6 +24,10 @@ import {
   imgClose,
   cardContainer,
   popupImage,
+  placeInput,
+  linkInput,
+  placePtofil,
+  linkPtofil,
   popupCaption,
   jobInput,
   profileForm,
@@ -131,7 +135,30 @@ const validationConfig = {
 enableValidation(validationConfig);
 
 // // При открытии формы профиля
-clearValidation(popupValidation, validationConfig);
-
+// clearValidation(popupValidation, validationConfig);
 // // При открытии формы добавления карточки
 // clearValidation(cardForm, validationConfig);
+
+// popupValidation.addEventListener('submit', function(evt) {
+//   // placePtofil.textContent = placeInput.value;
+//   // linkPtofil.textContent = linkInput.value;
+//   placePtofil.value = '';
+//   linkPtofil.value = '';
+  
+//   clearValidation(popupValidation, validationConfig)
+//   // очищаем форму
+// });
+
+
+popupValidation.addEventListener('submit', function(evt) {
+  evt.preventDefault(); // предотвратить перезагрузку страницы
+
+  // Очищаем значения в полях
+  placeInput.value = '';
+  linkInput.value = '';
+
+  // Очищаем ошибки валидации
+  clearValidation(formCard, validationConfig);
+
+  // Действия после очистки (например, закрыть попап)
+});

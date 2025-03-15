@@ -29,6 +29,10 @@ export const cardElement = document.querySelector('.popup_type_new-card');
 export const formCard = cardElement.querySelector('.popup__form');
 export const buttonAdd = container.querySelector('.profile__add-button');
 export const cardClose = cardElement.querySelector('.popup__close');
+export const placePtofil = document.querySelector('.popup__input_type_card-name')
+export const linkPtofil = document.querySelector(".popup__input_type_url");
+export const placeInput = formCard.querySelector('input[name="place-name"]');
+export const linkInput = formCard.querySelector('input[name="link"]');
 
 
 // Блок открытия карточки
