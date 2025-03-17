@@ -39,7 +39,7 @@ import {
 // import { initialCards } from "./cards.js";
 import { createCard, removeCard, likeCard } from './card.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getUserData, getCards,saveProfileApi,editingProfileApi} from './API.js';
+import { getUserData, getCards,createCardsApi,editingProfileApi} from './API.js';
 
 
 // Открытие и закрытие формы редактирования профиля
@@ -80,23 +80,19 @@ export function handleProfileFormSubmit(evt) {
 
 // Функция отправки поста
 export function processesCardCreation(evt) {
-  evt.preventDefault(); // Отменяем стандартную отправку формы
-  const nameCard = evt.target.querySelector('input[name="place-name"]');
-  const fotoCard = evt.target.querySelector('input[name="link"]');
+  evt.preventDefault(); 
+  const nameCard = evt.target.querySelector('input[name="place-name"]').value;
+  const fotoCard = evt.target.querySelector('input[name="link"]').value;
 
-  // Создаём карточку
-  const newCard = createCard(
-    { name: nameCard.value, link: fotoCard.value },
-    removeCard,
-    likeCard,
-    openFoto
-  );
-  // Добавляем карточку в контейнер
-  cardContainer.prepend(newCard); // prepend - добавляет в начало, append - в конец
-  evt.target.reset();
-  // Закрываем модальное окно
-  const popup = document.querySelector(".popup_is-opened");
-  closePopup(popup);
+  // Отправляем данные на сервер
+  createCardsApi(nameCard, fotoCard)
+    .then((cardData) => {
+      const newCard = cardAffiliation(cardData, cardData.owner._id); // Используем данные с сервера
+      cardContainer.prepend(newCard); // Добавляем в начало
+      evt.target.reset();
+      closePopup(document.querySelector(".popup_is-opened"));
+    })
+    .catch((err) => console.error("Ошибка создания карточки:", err));
 }
 
 // Функция открытия фото
@@ -143,39 +139,7 @@ popupValidation.addEventListener('submit', function(evt) {
 
   // Очищаем ошибки валидации
   clearValidation(formCard, validationConfig);
-
-  // Действия после очистки (например, закрыть попап)
 });
-
-
-function renderCards(cards, userId) {
-  const cardsContainer = document.querySelector(".places__list"); // Сюда добавляем карточки
-  cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
-
-  cards.forEach((card) => {
-    const cardElement = createCard(card, userId); // Создаём карточку
-    cardsContainer.append(cardElement); // Добавляем в DOM
-  });
-}
-
-//создание карточки API
-Promise.all([getUserData(), getCards()])
-.then(([userData, cards]) => {
-  console.log("Данные пользователя:", userData);
-  console.log("Карточки:", cards);
-
-  // Отображаем данные пользователя
-  document.querySelector(".popup__input_type_name").textContent = userData.name;
-  document.querySelector(".popup__input_type_description").textContent = userData.about;
-  document.querySelector(".profile__image").src = userData.avatar;
-
-  // Передаём _id пользователя для рендера карточек
-  renderCards(cards, userData._id);
-})
-.catch((err) => {
-  console.error("Ошибка загрузки данных:", err);
-});
-
 
 
 //редактирование профиля API 
@@ -195,11 +159,97 @@ editElement.addEventListener("submit", function (evt) {
     .catch((err) => console.error("Ошибка обновления профиля:", err));
 });
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   getUserData()
-//     .then((userData) => {
-//       namePtofil.value = userData.name;
-//       aboutPtofil.value = userData.about;
-//     })
-//     .catch((err) => console.error("Ошибка загрузки профиля:", err));
+document.addEventListener("DOMContentLoaded", () => {
+  getUserData()
+    .then((userData) => {
+      namePtofil.textContent = userData.name;
+      aboutPtofil.textContent = userData.about;
+    })
+    .catch((err) => console.error("Ошибка загрузки профиля:", err));
+});
+
+
+//6. Добавление новой карточки 
+// Promise.all([getUserData(), getCards()])
+// .then(([userData, cards]) => {
+//   console.log("Данные пользователя:", userData);
+//   console.log("Карточки:", cards);
+
+//   // Отображаем данные пользователя
+//   document.querySelector(".popup__input_type_name").textContent = userData.name;
+//   document.querySelector(".popup__input_type_description").textContent = userData.about;
+//   document.querySelector(".profile__image").src = userData.avatar;
+
+//   // Передаём _id пользователя для рендера карточек
+//   renderCards(cards, userData._id);
+// })
+// .catch((err) => {
+//   console.error("Ошибка загрузки данных:", err);
 // });
+
+//1. Грузим данные и карточки вместе
+Promise.all([getUserData(), getCards()])
+  .then(([userData, cards]) => {
+    console.log("Данные пользователя:", userData);
+    console.log("Карточки:", cards);
+
+    // Отображаем данные пользователя
+    document.querySelector(".popup__input_type_name").textContent = userData.name;
+    document.querySelector(".popup__input_type_description").textContent = userData.about;
+    document.querySelector(".profile__image").src = userData.avatar;
+
+    // Передаём _id пользователя для рендера карточек
+    renderCards(cards, userData._id);
+  })
+  .catch((err) => {
+    console.error("Ошибка загрузки данных:", err);
+  });
+
+
+//Карточка должна знать, принадлежит ли она текущему пользователю. Это нужно для отображения кнопки удаления.
+function cardAffiliation(card, userId) {
+  const cardTemplate = document.querySelector("#card-template").content.cloneNode(true);
+  const cardElement = cardTemplate.querySelector(".card");
+
+  const cardImage = cardElement.querySelector(".card__image");
+  const cardTitle = cardElement.querySelector(".card__title");
+  const deleteButton = cardElement.querySelector(".card__delete-button");
+  const likeButton = cardElement.querySelector(".card__like-button");
+
+  // Устанавливаем данные карточки
+  cardTitle.textContent = card.name;
+  cardImage.src = card.link;
+  cardImage.alt = card.name;
+
+  // Проверяем, принадлежит ли карточка текущему пользователю
+  if (card.owner._id !== userId) {
+    deleteButton.style.display = "none"; // Скрываем кнопку удаления
+  }
+
+  // Лайк карточки
+  if (card.likes.some(like => like._id === userId)) {
+    likeButton.classList.add("card__like-button_active");
+  }
+
+  return cardElement;
+}
+
+
+function renderCards(cards, userId) {
+  const cardsContainer = document.querySelector(".places__list"); // Сюда добавляем карточки
+  cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
+
+  cards.forEach((card) => {
+    const cardElement = cardAffiliation(card, userId); // Создаём карточку
+    cardsContainer.append(cardElement); // Добавляем в DOM
+  });
+}
+
+//ЗАГРУЗКА КАРТОЧЕК
+document.addEventListener("DOMContentLoaded", () => {
+  getCards()
+    .then((cards) => {
+      renderCards(cards);
+    })
+    .catch((err) => console.error("Ошибка загрузки карточек:", err));
+});
