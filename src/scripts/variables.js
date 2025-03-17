@@ -19,7 +19,7 @@ export const buttonEdit = container.querySelector(".profile__edit-button");
 export const editClose = editElement.querySelector('.popup__close');
 export const editSave= formEdit.querySelector('.popup__button');
 export const namePtofil = document.querySelector(".profile__title");
-export const jobtofil = document.querySelector(".profile__description");
+export const aboutPtofil = document.querySelector(".profile__description");
 export const nameInput = formEdit.querySelector('input[name="popup_name"]');
 export const jobInput = formEdit.querySelector('input[name="description"]');
 

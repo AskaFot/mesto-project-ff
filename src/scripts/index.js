@@ -14,7 +14,7 @@ import {
   formEdit,
   buttonEdit,
   editClose,
-  jobtofil,
+  aboutPtofil,
   namePtofil,
   cardElement,
   buttonAdd,
@@ -31,21 +31,21 @@ import {
   popupCaption,
   jobInput,
   profileForm,
+  formCard,
   cardForm,
   popupValidation
 } from "./variables.js";
 
-import { initialCards } from "./cards.js";
-import { createCard, removeCard, likeCard } from "./card.js";
+// import { initialCards } from "./cards.js";
+import { createCard, removeCard, likeCard } from './card.js';
 import { enableValidation, clearValidation } from './validation.js';
-
-
+import { getUserData, getCards,saveProfileApi,editingProfileApi} from './API.js';
 
 
 // Открытие и закрытие формы редактирования профиля
 buttonEdit.addEventListener("click", () => {
   nameInput.value = namePtofil.textContent; // Заполняем инпуты текущими данными
-  jobInput.value = jobtofil.textContent;
+  jobInput.value =  aboutPtofil.textContent;
   openPopup(editElement);
 });
 
@@ -64,16 +64,16 @@ formEdit.addEventListener("submit", handleProfileFormSubmit);
 cardElement.addEventListener("submit", processesCardCreation);
 
 // @todo: Вывести карточки на страницу
-initialCards.forEach((detailsCard) => {
-  const cardElement = createCard(detailsCard, removeCard, likeCard, openFoto);
-  cardContainer.append(cardElement);
-});
+// initialCards.forEach((detailsCard) => {
+//   const cardElement = createCard(detailsCard, removeCard, likeCard, openFoto);
+//   cardContainer.append(cardElement);
+// });
 
 // Функция отправки формы
 export function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   namePtofil.textContent = nameInput.value;
-  jobtofil.textContent = jobInput.value;
+  aboutPtofil.textContent = jobInput.value;
 
   closePopup(editElement); // Закрываем нужный попап
 }
@@ -131,24 +131,8 @@ const validationConfig = {
   errorClass: 'popup__error_visible' // Класс для сообщения об ошибке
 };
 
-// // // Включаем валидацию
+//  Включаем валидацию
 enableValidation(validationConfig);
-
-// // При открытии формы профиля
-// clearValidation(popupValidation, validationConfig);
-// // При открытии формы добавления карточки
-// clearValidation(cardForm, validationConfig);
-
-// popupValidation.addEventListener('submit', function(evt) {
-//   // placePtofil.textContent = placeInput.value;
-//   // linkPtofil.textContent = linkInput.value;
-//   placePtofil.value = '';
-//   linkPtofil.value = '';
-  
-//   clearValidation(popupValidation, validationConfig)
-//   // очищаем форму
-// });
-
 
 popupValidation.addEventListener('submit', function(evt) {
   evt.preventDefault(); // предотвратить перезагрузку страницы
@@ -162,3 +146,60 @@ popupValidation.addEventListener('submit', function(evt) {
 
   // Действия после очистки (например, закрыть попап)
 });
+
+
+function renderCards(cards, userId) {
+  const cardsContainer = document.querySelector(".places__list"); // Сюда добавляем карточки
+  cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
+
+  cards.forEach((card) => {
+    const cardElement = createCard(card, userId); // Создаём карточку
+    cardsContainer.append(cardElement); // Добавляем в DOM
+  });
+}
+
+//создание карточки API
+Promise.all([getUserData(), getCards()])
+.then(([userData, cards]) => {
+  console.log("Данные пользователя:", userData);
+  console.log("Карточки:", cards);
+
+  // Отображаем данные пользователя
+  document.querySelector(".popup__input_type_name").textContent = userData.name;
+  document.querySelector(".popup__input_type_description").textContent = userData.about;
+  document.querySelector(".profile__image").src = userData.avatar;
+
+  // Передаём _id пользователя для рендера карточек
+  renderCards(cards, userData._id);
+})
+.catch((err) => {
+  console.error("Ошибка загрузки данных:", err);
+});
+
+
+
+//редактирование профиля API 
+editElement.addEventListener("submit", function (evt) {
+  evt.preventDefault(); // Предотвращаем перезагрузку страницы
+
+  const newName = nameInput.value;
+  const newAbout = jobInput.value;
+
+  // Отправляем запрос на обновление профиля
+  editingProfileApi(newName, newAbout)
+    .then((userData) => {
+      // Обновляем интерфейс
+      namePtofil.textContent = userData.name;
+      aboutPtofil.textContent = userData.about;
+    })
+    .catch((err) => console.error("Ошибка обновления профиля:", err));
+});
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   getUserData()
+//     .then((userData) => {
+//       namePtofil.value = userData.name;
+//       aboutPtofil.value = userData.about;
+//     })
+//     .catch((err) => console.error("Ошибка загрузки профиля:", err));
+// });
