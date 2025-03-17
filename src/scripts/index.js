@@ -37,9 +37,9 @@ import {
 } from "./variables.js";
 
 // import { initialCards } from "./cards.js";
-import { createCard, removeCard, likeCard } from './card.js';
+import { cardAffiliation, removeCard, likeCard } from './card.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getUserData, getCards,createCardsApi,editingProfileApi} from './API.js';
+import { getUserData, getCards, createCardsApi,editingProfileApi} from './API.js';
 
 
 // Открытие и закрытие формы редактирования профиля
@@ -170,24 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 //6. Добавление новой карточки 
-// Promise.all([getUserData(), getCards()])
-// .then(([userData, cards]) => {
-//   console.log("Данные пользователя:", userData);
-//   console.log("Карточки:", cards);
 
-//   // Отображаем данные пользователя
-//   document.querySelector(".popup__input_type_name").textContent = userData.name;
-//   document.querySelector(".popup__input_type_description").textContent = userData.about;
-//   document.querySelector(".profile__image").src = userData.avatar;
 
-//   // Передаём _id пользователя для рендера карточек
-//   renderCards(cards, userData._id);
-// })
-// .catch((err) => {
-//   console.error("Ошибка загрузки данных:", err);
-// });
-
-//1. Грузим данные и карточки вместе
+//Грузим данные и карточки вместе
 Promise.all([getUserData(), getCards()])
   .then(([userData, cards]) => {
     console.log("Данные пользователя:", userData);
@@ -206,42 +191,14 @@ Promise.all([getUserData(), getCards()])
   });
 
 
-//Карточка должна знать, принадлежит ли она текущему пользователю. Это нужно для отображения кнопки удаления.
-function cardAffiliation(card, userId) {
-  const cardTemplate = document.querySelector("#card-template").content.cloneNode(true);
-  const cardElement = cardTemplate.querySelector(".card");
-
-  const cardImage = cardElement.querySelector(".card__image");
-  const cardTitle = cardElement.querySelector(".card__title");
-  const deleteButton = cardElement.querySelector(".card__delete-button");
-  const likeButton = cardElement.querySelector(".card__like-button");
-
-  // Устанавливаем данные карточки
-  cardTitle.textContent = card.name;
-  cardImage.src = card.link;
-  cardImage.alt = card.name;
-
-  // Проверяем, принадлежит ли карточка текущему пользователю
-  if (card.owner._id !== userId) {
-    deleteButton.style.display = "none"; // Скрываем кнопку удаления
-  }
-
-  // Лайк карточки
-  if (card.likes.some(like => like._id === userId)) {
-    likeButton.classList.add("card__like-button_active");
-  }
-
-  return cardElement;
-}
-
 
 function renderCards(cards, userId) {
   const cardsContainer = document.querySelector(".places__list"); // Сюда добавляем карточки
   cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
 
   cards.forEach((card) => {
-    const cardElement = cardAffiliation(card, userId); // Создаём карточку
-    cardsContainer.append(cardElement); // Добавляем в DOM
+    const cardElement = cardAffiliation(card, removeCard, likeCard, openFoto);
+    cardsContainer.append(cardElement);    cardsContainer.append(cardElement); // Добавляем в DOM
   });
 }
 

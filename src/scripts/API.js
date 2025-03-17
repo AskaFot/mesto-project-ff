@@ -1,6 +1,15 @@
 
+// const config = {
+//   baseUrl: 'https://nomoreparties.co/v1/cohort-42',
+//   headers: {
+//     authorization: 'c56e30dc-2883-4270-a59e-b2f7bae969c6',
+//     'Content-Type': 'application/json'
+//   }
+// }
+
+
 const cohortId = "wff-cohort-34";
-const token = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe";
+export const token = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe";
 const apiUrl = `https://nomoreparties.co/v1/${cohortId}`;
 
 
@@ -74,10 +83,28 @@ export function createCardsApi(name, link) {
       return Promise.reject(`Ошибка: ${res.status}`);
     }
   })}
-
+  
+  
 //7. Отображение количества лайков карточки
-
-
+// export const userId = "_id";
+// export function removeCardApi() {
+//   return fetch(`https://nomoreparties.co/v1/wff-cohort-34/cards/${userId}`, {
+//     method: "DELETE",
+//     headers: {
+//       Authorization: token,
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       cardId: uzerId,
+//     })
+//   })
+//   .then((res) => {
+//     if (res.ok) {
+//       return res.json();
+//     } else {
+//       return Promise.reject(`Ошибка: ${res.status}`);
+//     }
+//   })}
 
 //8. Удаление карточки
 

@@ -119,17 +119,25 @@
       </div>
     </div>
   </div>
-
+  <div id="delete-popup" class="popup">
+    <div class="popup-content">
+      <p>Вы уверены, что хотите удалить эту карточку?</p>
+      <button class="confirm-delete">Да</button>
+      <button class="cancel-delete">Нет</button>
+    </div>
+  </div>
 
 
   <template id="card-template">
     <li class="places__item card">
       <img class="card__image" src="" alt="" />
-      <button type="button" class="card__delete-button"></button>
+      <button type="button" class="card__delete-button" style="display:none;"></button> 
+    
       <div class="card__description">
         <h2 class="card__title">
         </h2>
         <button type="button" class="card__like-button"></button>
+        <span class="card__like-count">0</span>
       </div>
     </li>
   </template>
