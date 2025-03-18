@@ -37,10 +37,9 @@ import {
 } from "./variables.js";
 
 // import { initialCards } from "./cards.js";
-import { cardAffiliation, removeCard, likeCard } from './card.js';
+import { createCard,handleDeleteCard,removeCard, likeCard } from './card.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { getUserData, getCards, createCardsApi,editingProfileApi} from './API.js';
-
+import { getUserData, getCards, createCardsApi,fetchCards, editingProfileApi} from './API.js';
 
 // Открытие и закрытие формы редактирования профиля
 buttonEdit.addEventListener("click", () => {
@@ -87,7 +86,7 @@ export function processesCardCreation(evt) {
   // Отправляем данные на сервер
   createCardsApi(nameCard, fotoCard)
     .then((cardData) => {
-      const newCard = cardAffiliation(cardData, cardData.owner._id); // Используем данные с сервера
+      const newCard = createCard(cardData, cardData.owner._id); // Используем данные с сервера
       cardContainer.prepend(newCard); // Добавляем в начало
       evt.target.reset();
       closePopup(document.querySelector(".popup_is-opened"));
@@ -190,14 +189,12 @@ Promise.all([getUserData(), getCards()])
     console.error("Ошибка загрузки данных:", err);
   });
 
-
-
 function renderCards(cards, userId) {
   const cardsContainer = document.querySelector(".places__list"); // Сюда добавляем карточки
   cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
 
   cards.forEach((card) => {
-    const cardElement = cardAffiliation(card, removeCard, likeCard, openFoto);
+    const cardElement = createCard(card, handleDeleteCard, likeCard, openFoto);
     cardsContainer.append(cardElement);    cardsContainer.append(cardElement); // Добавляем в DOM
   });
 }
@@ -210,3 +207,33 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch((err) => console.error("Ошибка загрузки карточек:", err));
 });
+
+//УДАЛЕНИЕ КАРТЫ
+document.addEventListener("DOMContentLoaded", () => {
+  const currentUser = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe"; // ID текущего пользователя
+  const deletePopup = document.getElementById("delete-popup");
+  const confirmDeleteButton = document.querySelector(".confirm-delete");
+  const cancelDeleteButton = document.querySelector(".cancel-delete");
+  const cardsContainer = document.querySelector(".places__list");
+
+  if (!deletePopup || !confirmDeleteButton || !cancelDeleteButton) {
+    console.error("Ошибка: Попап удаления или его кнопки не найдены в DOM!");
+    return;
+  }
+
+  // Загрузка карточек с сервера
+  fetchCards()
+    .then(cardsData => {
+      cardsData.forEach(cardData => {
+        const cardElement = createCard(cardData, currentUser, likeCard, openFoto);
+        cardsContainer.append(cardElement);
+      });
+    })
+    .catch(err => console.error("Ошибка загрузки данных:", err));
+
+  confirmDeleteButton.addEventListener("click", handleDeleteCard);
+  cancelDeleteButton.addEventListener("click", () => {
+    deletePopup.style.display = "none";
+  });
+});
+

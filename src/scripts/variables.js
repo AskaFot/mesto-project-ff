@@ -9,6 +9,7 @@ export const cardContainer = container.querySelector(".places__list");
 export const profileForm = document.querySelector('.popup__form_profile');
 export const cardForm = document.querySelector('.popup__form_card');
 export const popupValidation = document.querySelector('.popup__form');
+export const elementCard = cardContainer.querySelector('.places__item')
 
 
 

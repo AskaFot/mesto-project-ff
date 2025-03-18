@@ -2,27 +2,39 @@
 // функция создания карточки, функции-обработчики 
 // событий удаления и лайка карточки;
 
-import { removeCardApi, token} from './API.js';
+import { deleteCardFromServer} from './API.js';
+import {elementCard} from "./variables.js";
 
 
-//Карточка должна знать, принадлежит ли она текущему пользователю. Это нужно для отображения кнопки удаления.
-export function cardAffiliation(detailsCard, removeCard, likeCard, openFoto) {
-   const templateContainer = document.querySelector("#card-template").content; // создает карточку
-  const containerElement = templateContainer
-    .querySelector(".card")
-    .cloneNode(true); // создает клон карточки
+
+// Функция создания карточки
+export function createCard(detailsCard, currentUser, likeCard, openFoto) {
+  const templateContainer = document.querySelector("#card-template").content;
+  const containerElement = templateContainer.querySelector(".card").cloneNode(true);
+
+  containerElement.setAttribute("data-created-by", detailsCard.owner ? detailsCard.owner._id : ""); 
+  containerElement.id = detailsCard._id;
+
   const titleElement = containerElement.querySelector(".card__title");
   const imageElement = containerElement.querySelector(".card__image");
-const buttonDelete = containerElement.querySelector(".card__delete-button"); // кнопка удалить песню
-const buttonLike = containerElement.querySelector('.card__like-button');
-const likeCount = containerElement.querySelector(".card__like-count");
+  const buttonDelete = containerElement.querySelector(".card__delete-button");
+  const buttonLike = containerElement.querySelector(".card__like-button");
+  const likeCount = containerElement.querySelector(".card__like-count");
 
-imageElement.src = detailsCard.link;
+  imageElement.src = detailsCard.link;
   imageElement.alt = detailsCard.name;
   titleElement.textContent = detailsCard.name;
-  likeCount.textContent = detailsCard.likes.length; // Устанавливаем количество лайков
+  likeCount.textContent = detailsCard.likes.length;
 
-  buttonLike.addEventListener("click", () => likeCard(buttonLike,likeCount));
+  console.log(`Создание карточки: ${detailsCard.name}, Владелец: ${detailsCard.owner ? detailsCard.owner._id : "неизвестно"}`);
+
+  if (detailsCard.owner && detailsCard.owner._id === currentUser) {
+    buttonDelete.style.display = "block";
+  } else {
+    buttonDelete.style.display = "none";
+  }
+
+  buttonLike.addEventListener("click", () => likeCard(buttonLike, likeCount));
   buttonDelete.addEventListener("click", () => removeCard(containerElement));
   imageElement.addEventListener("click", openFoto);
 
@@ -30,145 +42,48 @@ imageElement.src = detailsCard.link;
 }
 
 // Функция удаления карточки
-// export function removeCard(element) {
-//   element.remove();
-// }
-
-// // Предполагаем, что currentUser — это id текущего пользователя
-// const currentUser = 'user123';  // Например, текущий пользователь
-
-// // Находим все карточки на странице
-// const cards = document.querySelectorAll('.card');
-// const deletePopup = document.getElementById('delete-popup');
-// const confirmDeleteButton = document.getElementById('confirm-delete');
-// const cancelDeleteButton = document.getElementById('cancel-delete');
-
-// // Для каждой карточки проверяем, кто её создал, и показываем иконку корзины
-//  export function removeCard (cards,currentUser,buttonDelete){ 
-//   cards.forEach(card => {
-//   const createdBy = card.getAttribute('data-created-by');
-//   // const buttonDelete = containerElement.querySelector(".card__delete-button"); // кнопка удалить
-
-//   // Показываем кнопку удаления только если карточка создана текущим пользователем
-//   if (createdBy === currentUser) {
-//     buttonDelete.style.display = 'block'; // Показываем иконку корзины
-//   } else {
-//     ButtonDelete.style.display = 'none'; // Скрываем иконку корзины
-//   }
-// });
-
-// // Добавляем обработчик событий на кнопки удаления
-// deleteButtons.forEach(button => {
-//   button.addEventListener('click', (event) => {
-//     // Получаем карточку, к которой относится кнопка удаления
-//     const card = event.target.closest('.card');
-//     // Показываем попап
-//     deletePopup.style.display = 'block';
-//     // Сохраняем карточку, которую нужно удалить
-//     deletePopup.setAttribute('data-card-id', card.id);
-//   });
-// });
-
-// // Обработчик подтверждения удаления
-// confirmDeleteButton.addEventListener('click', () => {
-//   const cardId = deletePopup.getAttribute('data-card-id');
-//   const cardToDelete = document.getElementById(cardId);
-  
-//   // Удаляем карточку
-//   cardToDelete.remove();
-  
-//   // Закрываем попап
-//   deletePopup.style.display = 'none';
-// });
-
-// // Обработчик отмены удаления
-// cancelDeleteButton.addEventListener('click', () => {
-//   // Закрываем попап без удаления
-//   deletePopup.style.display = 'none';
-// });
-//  }
-
-
-
-// const currentUser = 'user123'; // ID текущего пользователя
-// const cards = document.querySelectorAll('.card');
-// const deletePopup = document.getElementById('delete-popup');
-// const confirmDeleteButton = document.querySelector('.confirm-delete');
-// const cancelDeleteButton = document.querySelector('.cancel-delete');
-
-
-
-// export function removeCard(cards, currentUser) {
-//   cards.forEach(card => {
-//     const createdBy = card.getAttribute('data-created-by');
-//     const buttonDelete = card.querySelector('.card__delete-button');
-
-//     if (createdBy === currentUser) {
-//       buttonDelete.style.display = 'block'; // Показываем кнопку удаления
-//     } else {
-//       buttonDelete.style.display = 'none'; // Скрываем кнопку удаления
-//     }
-
-//     // Добавляем обработчик клика по кнопке удаления
-//     buttonDelete.addEventListener('click', (event) => {
-//       deletePopup.style.display = 'block';
-//       deletePopup.setAttribute('data-card-id', card.id);
-//     });
-//   });
-// }
-
-// // Обработчик подтверждения удаления
-// confirmDeleteButton.addEventListener('click', () => {
-//   const cardId = deletePopup.getAttribute('data-card-id');
-//   if (!cardId) return;
-
-//   fetch(`https://nomoreparties.co/v1/wff-cohort-34/cards/${cardId}`, {
-//     method: "DELETE",
-//     headers: {
-//       Authorization: "Bearer token",
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then(res => {
-//       if (!res.ok) {
-//         return Promise.reject(`Ошибка: ${res.status}`);
-//       }
-//       return res.json();
-//     })
-//     .then(() => {
-//       document.getElementById(cardId).remove(); // Удаляем карточку из DOM
-//       deletePopup.style.display = 'none';
-//     })
-//     .catch(err => console.error(err));
-// });
-
-// // Обработчик отмены удаления
-// cancelDeleteButton.addEventListener('click', () => {
-//   deletePopup.style.display = 'none';
-// });
-
-
-export function removeCard(cards, currentUser) {
-  cards.forEach(card => {
-    const createdBy = card.getAttribute('data-created-by');
-    const buttonDelete = card.querySelector('.card__delete-button');
-
-    if (createdBy === currentUser) {
-      buttonDelete.style.display = 'block';
-    } else {
-      buttonDelete.style.display = 'none';
-    }
-
-    buttonDelete.addEventListener('click', (event) => {
-      const deletePopup = document.getElementById('delete-popup');
-      deletePopup.style.display = 'block';
-      deletePopup.setAttribute('data-card-id', card.id);
-    });
-  });
+export function removeCard(elementCard) {
+  if (elementCard instanceof HTMLElement) {
+    console.log(`🗑 Удаление карточки ID: ${elementCard.id}`);
+    elementCard.remove();
+  } else {
+    console.error("❌ removeCard получил не DOM-элемент!", elementCard);
+  }
 }
 
+
+
+// Функция удаления карточки с подтверждением
+function openDeletePopup(cardElement) {
+  const deletePopup = document.getElementById("delete-popup");
+  deletePopup.style.display = "block";
+  deletePopup.setAttribute("data-card-id", cardElement.id);
+}
+
+// Функция обработки удаления карточки
+export function handleDeleteCard() {
+  const deletePopup = document.getElementById("delete-popup");
+  const cardId = deletePopup.getAttribute("data-card-id");
+  if (!cardId) return;
+
+  deleteCardFromServer(cardId)
+    .then(() => {
+      const cardElement = document.getElementById(cardId);
+      if (cardElement) {
+        cardElement.remove();
+      }
+      deletePopup.style.display = "none";
+    })
+    .catch(err => console.error(err));
+}
+
+
+
+
+//потом в API
+
 document.addEventListener("DOMContentLoaded", () => {
-  const currentUser = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe";
+  const currentUser = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe"; // ID текущего пользователя
   const cards = document.querySelectorAll('.card');
   const deletePopup = document.getElementById('delete-popup');
   const confirmDeleteButton = document.querySelector('.confirm-delete');
@@ -179,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Обработчики событий для попапа
+  // Обработчик подтверждения удаления
   confirmDeleteButton.addEventListener('click', () => {
     const cardId = deletePopup.getAttribute('data-card-id');
     if (!cardId) return;
@@ -198,19 +113,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then(() => {
-        document.getElementById(cardId).remove();
+        const cardElement = document.getElementById(cardId);
+        if (cardElement) {
+          cardElement.remove(); // Удаляем карточку из DOM
+        }
         deletePopup.style.display = 'none';
       })
       .catch(err => console.error(err));
   });
 
+  // Обработчик отмены удаления
   cancelDeleteButton.addEventListener('click', () => {
     deletePopup.style.display = 'none';
   });
 
+  // Вызываем функцию для отображения кнопок удаления
   removeCard(cards, currentUser);
 });
-
 
 // Функция лайка карточки
 export function likeCard(elementLike, likeCount) {
