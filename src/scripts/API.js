@@ -107,10 +107,10 @@ export function createCardsApi(name, link) {
 
 //8. Удаление карточки
 export function deleteCardFromServer(cardId) {
-  return fetch(`${apiUrl}/cards/${cardId}`, {
+  return fetch(`https://nomoreparties.co/v1/wff-cohort-34/cards/${cardId}`, {
     method: "DELETE",
     headers: {
-      Authorization: token,
+      Authorization: "Bearer token",  // Добавь свой токен
       "Content-Type": "application/json",
     },
   })

@@ -37,7 +37,7 @@ import {
 } from "./variables.js";
 
 // import { initialCards } from "./cards.js";
-import { createCard,handleDeleteCard,removeCard, likeCard } from './card.js';
+import { createCard,handleDeleteCardSubmit,removeCard, likeCard, openDeletePopup } from './card.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { getUserData, getCards, createCardsApi,fetchCards, editingProfileApi} from './API.js';
 
@@ -194,46 +194,75 @@ function renderCards(cards, userId) {
   cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
 
   cards.forEach((card) => {
-    const cardElement = createCard(card, handleDeleteCard, likeCard, openFoto);
+    const cardElement = createCard(card, handleDeleteCardSubmit, likeCard, openFoto);
     cardsContainer.append(cardElement);    cardsContainer.append(cardElement); // Добавляем в DOM
   });
 }
 
 //ЗАГРУЗКА КАРТОЧЕК
-document.addEventListener("DOMContentLoaded", () => {
-  getCards()
-    .then((cards) => {
-      renderCards(cards);
-    })
-    .catch((err) => console.error("Ошибка загрузки карточек:", err));
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   getCards()
+//     .then((cards) => {
+//       renderCards(cards);
+//     })
+//     .catch((err) => console.error("Ошибка загрузки карточек:", err));
+// });
 
-//УДАЛЕНИЕ КАРТЫ
+// //УДАЛЕНИЕ КАРТЫ
+// document.addEventListener("DOMContentLoaded", () => {
+//   const currentUser = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe"; // ID текущего пользователя
+//   const deletePopup = document.getElementById("delete-popup");
+//   const confirmDeleteButton = document.querySelector(".confirm-delete");
+//   const cancelDeleteButton = document.querySelector(".cancel-delete");
+//   const cardsContainer = document.querySelector(".places__list");
+
+//   if (!deletePopup || !confirmDeleteButton || !cancelDeleteButton) {
+//     console.error("Ошибка: Попап удаления или его кнопки не найдены в DOM!");
+//     return;
+//   }
+
+//   // Загрузка карточек с сервера
+//   fetchCards()
+//     .then(cardsData => {
+//       cardsData.forEach(cardData => {
+//         const cardElement = createCard(cardData, currentUser, likeCard, openFoto);
+//         cardsContainer.append(cardElement);
+//       });
+//     })
+//     .catch(err => console.error("Ошибка загрузки данных:", err));
+
+//   confirmDeleteButton.addEventListener("click", handleDeleteCard);
+//   cancelDeleteButton.addEventListener("click", () => {
+//     deletePopup.style.display = "none";
+//   });
+// });
+
 document.addEventListener("DOMContentLoaded", () => {
-  const currentUser = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe"; // ID текущего пользователя
-  const deletePopup = document.getElementById("delete-popup");
   const confirmDeleteButton = document.querySelector(".confirm-delete");
   const cancelDeleteButton = document.querySelector(".cancel-delete");
-  const cardsContainer = document.querySelector(".places__list");
 
-  if (!deletePopup || !confirmDeleteButton || !cancelDeleteButton) {
-    console.error("Ошибка: Попап удаления или его кнопки не найдены в DOM!");
-    return;
+  // Назначаем обработчик для кнопки подтверждения удаления
+  confirmDeleteButton.addEventListener("click", handleDeleteCardSubmit);
+
+  // Назначаем обработчик для кнопки отмены удаления
+  cancelDeleteButton.addEventListener("click", () => {
+    const deletePopup = document.getElementById("delete-popup");
+    deletePopup.style.display = "none";  // Закрываем модалку
+    currentCardId = null;  // Очищаем глобальные переменные
+    currentCardElement = null;
+  });
+
+  // Теперь нужно изменить обработчик клика на корзинку в createCard
+  function openDeletePopupHandler(cardElement) {
+    const cardId = cardElement.id;  // Получаем ID карточки
+    openDeletePopup(cardId, cardElement);  // Открываем модалку
   }
 
-  // Загрузка карточек с сервера
-  fetchCards()
-    .then(cardsData => {
-      cardsData.forEach(cardData => {
-        const cardElement = createCard(cardData, currentUser, likeCard, openFoto);
-        cardsContainer.append(cardElement);
-      });
-    })
-    .catch(err => console.error("Ошибка загрузки данных:", err));
-
-  confirmDeleteButton.addEventListener("click", handleDeleteCard);
-  cancelDeleteButton.addEventListener("click", () => {
-    deletePopup.style.display = "none";
+  // Здесь добавляем обработчик клика на корзинку
+  document.querySelectorAll('.card__delete-button').forEach(button => {
+    button.addEventListener("click", (event) => {
+      const cardElement = event.target.closest(".card");
+      openDeletePopupHandler(cardElement);
+    });
   });
 });
-
