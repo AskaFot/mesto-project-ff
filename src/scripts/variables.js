@@ -10,6 +10,8 @@ export const profileForm = document.querySelector('.popup__form_profile');
 export const cardForm = document.querySelector('.popup__form_card');
 export const popupValidation = document.querySelector('.popup__form');
 export const elementCard = cardContainer.querySelector('.places__item')
+export const buttonAvatar = container.querySelector(".submit-avatar");
+export const avatarPtofil = document.querySelector(".profile__image");
 
 
 

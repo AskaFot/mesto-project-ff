@@ -127,17 +127,16 @@
     <h3 class="popup__title">Обновить аватар</h3>
     <form class="popup__form" id="avatar-form">
       <label for="avatar-url">Введите URL нового аватара:</label>
-      <input type="url" id="avatar-url" placeholder="Введите URL изображения" required>
-      <button type="submit" id="submit-avatar">Сохранить</button>
+      <input type="url" class="avatar-link" id="avatar-url" placeholder="Введите URL изображения" required>
+      <button type="submit" class="submit-avatar" id="submit-avatar">Сохранить</button>
     </form>
   </div>
 </div>
 
   <div id="delete-popup" class="popup">
     <div class="popup-content">
-      <p>Вы уверены, что хотите удалить эту карточку?</p>
-      <button class="confirm-delete">Да</button>
-      <button class="cancel-delete">Нет</button>
+      <p>Вы уверены?</p>
+      <button class="confirm-delete"  id="confirmDeleteButton">Да</button>
     </div>
   </div>
 
