@@ -11,7 +11,7 @@ const cohortId = "wff-cohort-34";
 export const token = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe";
 const apiUrl = `https://nomoreparties.co/v1/${cohortId}`;
 
-
+// https://nomoreparties.co/v1/wff-cohort-34
 
 //3. Загрузка информации о пользователе с сервера
 export function getUserData() {
@@ -110,7 +110,7 @@ export function deleteCardFromServer(cardId) {
   return fetch(`https://nomoreparties.co/v1/wff-cohort-34/cards/${cardId}`, {
     method: "DELETE",
     headers: {
-      Authorization: "Bearer token",  // Добавь свой токен
+      Authorization: "1c551ff6-00cc-40b7-b844-b0d2f447e9fe",  // Добавь свой токен
       "Content-Type": "application/json",
     },
   })
@@ -122,20 +122,20 @@ export function deleteCardFromServer(cardId) {
     });
 }
 
-export function fetchCards() {
-  return fetch(`${apiUrl}/cards`, {
-    headers: {
-      Authorization: token,
-      "Content-Type": "application/json",
-    },
-  })
-    .then(res => {
-      if (!res.ok) {
-        return Promise.reject(`Ошибка: ${res.status}`);
-      }
-      return res.json();
-    });
-}
+// export function fetchCards() {
+//   return fetch(`${apiUrl}/cards`, {
+//     headers: {
+//       Authorization: token,
+//       "Content-Type": "application/json",
+//     },
+//   })
+//     .then(res => {
+//       if (!res.ok) {
+//         return Promise.reject(`Ошибка: ${res.status}`);
+//       }
+//       return res.json();
+//     });
+// }
 
 
 //9. Постановка и снятие лайка

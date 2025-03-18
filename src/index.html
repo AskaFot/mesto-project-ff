@@ -119,6 +119,20 @@
       </div>
     </div>
   </div>
+
+<!-- Форма для редактирования аватара -->
+<div class="popup" id="avatar-popup" style="display:none;">
+  <div class="popup__content">
+    <button type="button" class="popup__close" id="close-avatar-popup">&times;</button>
+    <h3 class="popup__title">Обновить аватар</h3>
+    <form class="popup__form" id="avatar-form">
+      <label for="avatar-url">Введите URL нового аватара:</label>
+      <input type="url" id="avatar-url" placeholder="Введите URL изображения" required>
+      <button type="submit" id="submit-avatar">Сохранить</button>
+    </form>
+  </div>
+</div>
+
   <div id="delete-popup" class="popup">
     <div class="popup-content">
       <p>Вы уверены, что хотите удалить эту карточку?</p>
@@ -132,12 +146,11 @@
     <li class="places__item card">
       <img class="card__image" src="" alt="" />
       <button type="button" class="card__delete-button" style="display:none;"></button> 
-    
       <div class="card__description">
         <h2 class="card__title">
         </h2>
-        <button type="button" class="card__like-button"></button>
-        <span class="card__like-count">0</span>
+        <button class="card__like-button"></button>
+        <span class="card__like-count">0</span> <!-- Количество лайков -->
       </div>
     </li>
   </template>

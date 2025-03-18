@@ -7,7 +7,7 @@
 
 import "../pages/index.css";
 
-import { openPopup, closePopup, clickOvarlay,handleEscape } from "./modal.js";
+import { openPopup, closePopup, clickOvarlay, handleEscape } from "./modal.js";
 
 import {
   editElement,
@@ -33,18 +33,30 @@ import {
   profileForm,
   formCard,
   cardForm,
-  popupValidation
+  popupValidation,
 } from "./variables.js";
 
 // import { initialCards } from "./cards.js";
-import { createCard,handleDeleteCardSubmit,removeCard, likeCard, openDeletePopup } from './card.js';
-import { enableValidation, clearValidation } from './validation.js';
-import { getUserData, getCards, createCardsApi,fetchCards, editingProfileApi} from './API.js';
+import {
+  createCard,
+  handleDeleteCardSubmit,
+  fetchCards,
+  removeCard,
+  likeCard,
+  openDeletePopup,
+} from "./card.js";
+import { enableValidation, clearValidation } from "./validation.js";
+import {
+  getUserData,
+  getCards,
+  createCardsApi,
+  editingProfileApi,
+} from "./API.js";
 
 // Открытие и закрытие формы редактирования профиля
 buttonEdit.addEventListener("click", () => {
   nameInput.value = namePtofil.textContent; // Заполняем инпуты текущими данными
-  jobInput.value =  aboutPtofil.textContent;
+  jobInput.value = aboutPtofil.textContent;
   openPopup(editElement);
 });
 
@@ -79,14 +91,19 @@ export function handleProfileFormSubmit(evt) {
 
 // Функция отправки поста
 export function processesCardCreation(evt) {
-  evt.preventDefault(); 
+  evt.preventDefault();
   const nameCard = evt.target.querySelector('input[name="place-name"]').value;
   const fotoCard = evt.target.querySelector('input[name="link"]').value;
 
   // Отправляем данные на сервер
   createCardsApi(nameCard, fotoCard)
     .then((cardData) => {
-      const newCard = createCard(cardData, cardData.owner._id); // Используем данные с сервера
+      const newCard = createCard(
+        card,
+        handleDeleteCardSubmit,
+        likeCard,
+        openFoto
+      ); // Используем данные с сервера
       cardContainer.prepend(newCard); // Добавляем в начало
       evt.target.reset();
       closePopup(document.querySelector(".popup_is-opened"));
@@ -114,34 +131,31 @@ export function openFoto(evt) {
 
 document.addEventListener("click", clickOvarlay);
 
-
-
 // // Объект настроек
 const validationConfig = {
-  formSelector: '.popup__form', // Селектор для форм
-  inputSelector: '.popup__input', // Селектор для полей ввода
-  submitButtonSelector: '.popup__button', // Селектор для кнопки отправки
-  inactiveButtonClass: 'popup__button_disabled', // Класс для неактивной кнопки
-  inputErrorClass: 'popup__input_type_error', // Класс для полей с ошибками
-  errorClass: 'popup__error_visible' // Класс для сообщения об ошибке
+  formSelector: ".popup__form", // Селектор для форм
+  inputSelector: ".popup__input", // Селектор для полей ввода
+  submitButtonSelector: ".popup__button", // Селектор для кнопки отправки
+  inactiveButtonClass: "popup__button_disabled", // Класс для неактивной кнопки
+  inputErrorClass: "popup__input_type_error", // Класс для полей с ошибками
+  errorClass: "popup__error_visible", // Класс для сообщения об ошибке
 };
 
 //  Включаем валидацию
 enableValidation(validationConfig);
 
-popupValidation.addEventListener('submit', function(evt) {
+popupValidation.addEventListener("submit", function (evt) {
   evt.preventDefault(); // предотвратить перезагрузку страницы
 
   // Очищаем значения в полях
-  placeInput.value = '';
-  linkInput.value = '';
+  placeInput.value = "";
+  linkInput.value = "";
 
   // Очищаем ошибки валидации
   clearValidation(formCard, validationConfig);
 });
 
-
-//редактирование профиля API 
+//редактирование профиля API
 editElement.addEventListener("submit", function (evt) {
   evt.preventDefault(); // Предотвращаем перезагрузку страницы
 
@@ -167,9 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch((err) => console.error("Ошибка загрузки профиля:", err));
 });
 
-
-//6. Добавление новой карточки 
-
+//6. Добавление новой карточки
 
 //Грузим данные и карточки вместе
 Promise.all([getUserData(), getCards()])
@@ -178,8 +190,10 @@ Promise.all([getUserData(), getCards()])
     console.log("Карточки:", cards);
 
     // Отображаем данные пользователя
-    document.querySelector(".popup__input_type_name").textContent = userData.name;
-    document.querySelector(".popup__input_type_description").textContent = userData.about;
+    document.querySelector(".popup__input_type_name").textContent =
+      userData.name;
+    document.querySelector(".popup__input_type_description").textContent =
+      userData.about;
     document.querySelector(".profile__image").src = userData.avatar;
 
     // Передаём _id пользователя для рендера карточек
@@ -194,75 +208,151 @@ function renderCards(cards, userId) {
   cardsContainer.innerHTML = ""; // Очищаем контейнер перед рендерингом
 
   cards.forEach((card) => {
-    const cardElement = createCard(card, handleDeleteCardSubmit, likeCard, openFoto);
-    cardsContainer.append(cardElement);    cardsContainer.append(cardElement); // Добавляем в DOM
+    const cardElement = createCard(
+      card,
+      handleDeleteCardSubmit,
+      likeCard,
+      openFoto
+    );
+    cardsContainer.append(cardElement); // Добавляем в DOM
   });
 }
 
-//ЗАГРУЗКА КАРТОЧЕК
-// document.addEventListener("DOMContentLoaded", () => {
-//   getCards()
-//     .then((cards) => {
-//       renderCards(cards);
-//     })
-//     .catch((err) => console.error("Ошибка загрузки карточек:", err));
-// });
-
 // //УДАЛЕНИЕ КАРТЫ
-// document.addEventListener("DOMContentLoaded", () => {
-//   const currentUser = "1c551ff6-00cc-40b7-b844-b0d2f447e9fe"; // ID текущего пользователя
-//   const deletePopup = document.getElementById("delete-popup");
-//   const confirmDeleteButton = document.querySelector(".confirm-delete");
-//   const cancelDeleteButton = document.querySelector(".cancel-delete");
-//   const cardsContainer = document.querySelector(".places__list");
-
-//   if (!deletePopup || !confirmDeleteButton || !cancelDeleteButton) {
-//     console.error("Ошибка: Попап удаления или его кнопки не найдены в DOM!");
-//     return;
-//   }
-
-//   // Загрузка карточек с сервера
-//   fetchCards()
-//     .then(cardsData => {
-//       cardsData.forEach(cardData => {
-//         const cardElement = createCard(cardData, currentUser, likeCard, openFoto);
-//         cardsContainer.append(cardElement);
-//       });
-//     })
-//     .catch(err => console.error("Ошибка загрузки данных:", err));
-
-//   confirmDeleteButton.addEventListener("click", handleDeleteCard);
-//   cancelDeleteButton.addEventListener("click", () => {
-//     deletePopup.style.display = "none";
-//   });
-// });
-
 document.addEventListener("DOMContentLoaded", () => {
+  const currentUser = localStorage.getItem("currentUser"); // Загружаем ID текущего пользователя
+  const deletePopup = document.getElementById("delete-popup");
   const confirmDeleteButton = document.querySelector(".confirm-delete");
   const cancelDeleteButton = document.querySelector(".cancel-delete");
 
-  // Назначаем обработчик для кнопки подтверждения удаления
-  confirmDeleteButton.addEventListener("click", handleDeleteCardSubmit);
-
-  // Назначаем обработчик для кнопки отмены удаления
-  cancelDeleteButton.addEventListener("click", () => {
-    const deletePopup = document.getElementById("delete-popup");
-    deletePopup.style.display = "none";  // Закрываем модалку
-    currentCardId = null;  // Очищаем глобальные переменные
-    currentCardElement = null;
-  });
-
-  // Теперь нужно изменить обработчик клика на корзинку в createCard
-  function openDeletePopupHandler(cardElement) {
-    const cardId = cardElement.id;  // Получаем ID карточки
-    openDeletePopup(cardId, cardElement);  // Открываем модалку
+  if (!deletePopup || !confirmDeleteButton || !cancelDeleteButton) {
+    console.error("Ошибка: Попап удаления или его кнопки не найдены в DOM!");
+    return;
   }
 
-  // Здесь добавляем обработчик клика на корзинку
-  document.querySelectorAll('.card__delete-button').forEach(button => {
-    button.addEventListener("click", (event) => {
+  let currentCardId = null;
+  let currentCardElement = null;
+
+  // Функция открытия попапа удаления
+  function openDeletePopup(cardElement) {
+    currentCardId = cardElement.id;
+    currentCardElement = cardElement;
+    deletePopup.style.display = "block";
+    deletePopup.setAttribute("data-card-id", currentCardId);
+  }
+
+  // Обработчик на кнопку удаления
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("card__delete-button")) {
       const cardElement = event.target.closest(".card");
-      openDeletePopupHandler(cardElement);
-    });
+      if (cardElement) {
+        openDeletePopup(cardElement);
+      }
+    }
   });
+
+  // Подтверждение удаления карточки
+  confirmDeleteButton.addEventListener("click", () => {
+    if (!currentCardId) return;
+
+    fetch(`https://nomoreparties.co/v1/wff-cohort-34/cards/${currentCardId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "1c551ff6-00cc-40b7-b844-b0d2f447e9fe",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) return Promise.reject(`Ошибка: ${res.status}`);
+        return res.json();
+      })
+      .then(() => {
+        if (currentCardElement) {
+          currentCardElement.remove();
+        }
+        deletePopup.style.display = "none";
+        currentCardId = null;
+        currentCardElement = null;
+      })
+      .catch((err) => console.error("Ошибка при удалении:", err));
+  });
+
+  // Отмена удаления
+  cancelDeleteButton.addEventListener("click", () => {
+    deletePopup.style.display = "none";
+    currentCardId = null;
+    currentCardElement = null;
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetchCards();
+});
+
+//аватар
+
+document.addEventListener("DOMContentLoaded", function () {
+  const avatarImage = document.querySelector(".profile__image");
+  const editAvatarIcon = document.querySelector(".profile__edit-button"); // Исправлено на правильный класс
+  const avatarPopup = document.getElementById("avatar-popup");
+  const closePopupButton = document.getElementById("close-avatar-popup");
+  const avatarUrlInput = document.getElementById("avatar-url");
+  const submitButton = document.getElementById("submit-avatar");
+  const avatarForm = document.getElementById("avatar-form");
+
+  // Открыть попап при клике на иконку редактирования аватара
+  if (editAvatarIcon) {
+    editAvatarIcon.addEventListener("click", function () {
+      avatarPopup.style.display = "flex";
+    });
+  }
+
+  // Закрыть попап при клике на крестик
+  if (closePopupButton) {
+    closePopupButton.addEventListener("click", function () {
+      avatarPopup.style.display = "none";
+    });
+  }
+
+  // Обработчик отправки формы
+  if (avatarForm) {
+    avatarForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const newAvatarUrl = avatarUrlInput.value.trim();
+
+      // Валидация URL
+      if (!newAvatarUrl) {
+        alert("Пожалуйста, введите корректный URL.");
+        return;
+      }
+
+      try {
+        // Отправка PATCH-запроса на сервер для обновления аватара
+        const response = await fetch(
+          "https://nomoreparties.co/v1/cohortId/users/me/avatar",
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ avatar: newAvatarUrl }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Не удалось обновить аватар.");
+        }
+
+        // Обновление аватара на странице
+        const data = await response.json();
+        avatarImage.style.backgroundImage = `url(${data.avatar})`;
+
+        // Закрытие попапа
+        avatarPopup.style.display = "none";
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+  }
 });
