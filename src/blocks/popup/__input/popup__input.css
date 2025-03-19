@@ -9,6 +9,9 @@
   padding: 10px 0 0;
   margin-bottom: 10px;
 }
+.form__input-error{
+  color: red;
+}
 
 .popup__input:last-of-type {
   margin-bottom: 0;

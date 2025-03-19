@@ -1,5 +1,3 @@
-
-
 // Функция, которая добавляет класс с ошибкой
 const showInputError = (formElement, formInput, errorMessage) => {
   const errorElement = formElement.querySelector(`.${formInput.id}-error`);
@@ -23,14 +21,11 @@ const isValid = (formElement, formInput) => {
     // и заменяет ею стандартное сообщение об ошибке
     // formInput.setCustomValidity("Разрешены только латинские и кириллические буквы, знаки дефиса и пробелы");
     formInput.setCustomValidity(formInput.dataset.errorMessage);
-  } 
-  else if (formInput.validity.tooShort) {
+  } else if (formInput.validity.tooShort) {
     formInput.setCustomValidity(``);
-  }
-  else if (formInput.validity.tooLong) {
+  } else if (formInput.validity.tooLong) {
     formInput.setCustomValidity(``);
-  } 
-  else {
+  } else {
     // если передать пустую строку, то будут доступны
     // стандартные браузерные сообщения
     formInput.setCustomValidity("");
@@ -89,12 +84,14 @@ export function toggleButtonState(inputList, buttonElement) {
   }
 }
 
-  export function clearValidation (formElement, settings){
-  const inputList = Array.from(formElement.querySelectorAll(settings.formInput));
+export function clearValidation(formElement, settings) {
+  const inputList = Array.from(
+    formElement.querySelectorAll(settings.formInput)
+  );
   // const buttonElement = formElement.querySelector(settings.submitButtonSelector);
 
-  inputList.forEach(input => {
-    input.value = ''; // очищаем значение каждого поля
+  inputList.forEach((input) => {
+    input.value = ""; // очищаем значение каждого поля
     hideInputError(formElement, input, settings); // скрываем ошибку
   });
 }
