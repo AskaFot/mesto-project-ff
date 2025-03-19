@@ -16,6 +16,7 @@ import {
   buttonEdit,
   buttonAdd,
   editElement,
+  avatarInput,
   cardElement,
   popupType,
   popupImage,
@@ -62,51 +63,18 @@ popupValidation.addEventListener("submit", function (evt) {
   clearValidation(formCard, validationConfig);
 });
 
-// // Загружаем профиль и карточки при загрузке страницы
-// document.addEventListener("DOMContentLoaded", () => {
-//   Promise.all([fetchUserProfile(), fetchCards()])
-//     .then(([userData, cards]) => {
-//       if (!userData || !userData.name || !userData.about || !userData.avatar) {
-//         console.error("❌ Ошибка: данные профиля загружены некорректно!");
-//         return;
-//       }
-
-//       namePtofil.textContent = userData.name;
-//       aboutPtofil.textContent = userData.about;
-//       document.querySelector(".profile__image").style.backgroundImage = `url(${userData.avatar})`;
-
-//       cards.forEach((card) => {
-//         const cardEl = createCard(card);
-//         if (cardEl) cardContainer.append(cardEl);
-//       });
-//     })
-//     .catch(console.error);
-// });
-
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   Promise.all([fetchUserProfile(), fetchCards()])
-//     .then(([userData, cards]) => {
-//       const userId = userData._id; // ID текущего пользователя
-//       const cardContainer = document.querySelector(".places__list");
-
-//       cards.forEach((card) => {
-//         const cardElement = createCard(card, userId);
-//         if (cardElement) cardContainer.append(cardElement);
-//       });
-//     })
-//     .catch(console.error);
-// });
-
 // Добавление новой карточки
 cardElement.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
+  setLoading(evt.target.querySelector('.popup__button'), true
+)
   console.log("🔄 Форма отправлена!"); // Проверяем, вызывается ли `submit` дважды
 
   const name = evt.target.querySelector('input[name="place-name"]').value;
   const link = evt.target.querySelector('input[name="link"]').value;
 
+// console.log(btn.innerText)
   evt.target.reset(); // Очищаем форму сразу
 
   addNewCard(name, link)
@@ -118,13 +86,22 @@ cardElement.addEventListener("submit", (evt) => {
         if (newCard) {
           cardContainer.prepend(newCard);
         }
-
+        setLoading(evt.target.querySelector('.popup__button'), false
+)
         closePopup(cardElement);
       }
     })
     .catch(console.error);
 });
 
+export function setLoading (btn, isLoading){
+  if(isLoading){
+    btn.innerText = 'Сохранить...'
+  }
+  else{
+    btn.innerText = 'Сохранить'
+  }
+}
 
 // Функция открытия фото
 export function openFoto(evt) {
@@ -161,10 +138,15 @@ document.querySelector(".popup_type_image .popup__close").addEventListener("clic
 // Обновление профиля
 editElement.addEventListener("submit", (evt) => {
   evt.preventDefault();
+  setLoading(evt.target.querySelector('.popup__button'), true)
+
   updateUserProfile(nameInput.value, jobInput.value)
+
     .then((userData) => {
       namePtofil.textContent = userData.name;
       aboutPtofil.textContent = userData.about;
+      setLoading(evt.target.querySelector('.popup__button'), false)
+
       closePopup(editElement);
     })
     .catch(console.error);
@@ -194,19 +176,59 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// // Добавление карточки
-// cardElement.addEventListener("submit", (evt) => {
-//   evt.preventDefault();
-//   const name = evt.target.querySelector('input[name="place-name"]').value;
-//   const link = evt.target.querySelector('input[name="link"]').value;
 
-//   addNewCard(name, link)
-//     .then((cardData) => {
-//       if (cardData) {
-//         cardContainer.prepend(createCard(cardData));
-//         evt.target.reset();
-//         closePopup(cardElement);
-//       }
-//     })
-//     .catch(console.error);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const avatarPopup = document.getElementById("avatar-popup");
+  const avatarForm = document.getElementById("avatar-form");
+  const avatarInput = document.getElementById("avatar-url");
+  const submitAvatarButton = document.getElementById("submit-avatar");
+  const avatarImage = document.querySelector(".profile__image"); // Аватар на странице
+  const closeAvatarPopup = document.getElementById("close-avatar-popup");
+
+  // Открытие попапа
+  document.querySelector(".profile__image").addEventListener("click", () => {
+    avatarPopup.classList.add("popup_is-opened");
+  });
+
+  // Закрытие попапа
+  closeAvatarPopup.addEventListener("click", () => {
+    avatarPopup.classList.remove("popup_is-opened");
+  });
+
+  // Обработчик формы
+  avatarForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    
+    const avatarUrl = avatarInput.value.trim();
+
+    if (!avatarUrl) {
+      alert("Введите URL аватара!"); // Минимальная валидация
+      return;
+    }
+
+    submitAvatarButton.textContent = "Сохранение..."; // UI-блокировка кнопки
+    event.target.reset();
+    updateAvatar(avatarUrl)
+      .then((data) => {
+        if (data && data.avatar) {
+          avatarImage.src = data.avatar; // Меняем аватар на странице
+          avatarImage.style.backgroundImage = `url("${data.avatar}")`;
+        }
+        avatarPopup.classList.remove("popup_is-opened");
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        submitAvatarButton.textContent = "Сохранить"; // Возвращаем кнопку в нормальный вид
+      });
+  });
+});
+
+// // Обработчик формы обновления аватара
+// document.querySelector(".submit-avatar").addEventListener("submit", (evt) => {
+//   evt.preventDefault();
+//   const avatarUrl = evt.target.querySelector(".avatar-link").value;
+//   updateAvatar(avatarUrl);
 // });

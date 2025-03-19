@@ -1,4 +1,6 @@
 import { deleteCard, toggleLike } from "./api.js";
+import { fetchUserProfile, fetchCards, updateUserProfile, addNewCard } from "./api.js";
+import { openPopup, closePopup } from "./modal.js";
 
 // Проверяем, что шаблон существует в DOM
 const cardTemplate = document.querySelector("#card-template");
@@ -55,11 +57,6 @@ export function createCard(cardData) {
   return cardElement;
 }
 
-
-
-import { fetchUserProfile, fetchCards, updateUserProfile, addNewCard, updateAvatar } from "./api.js";
-import { openPopup, closePopup } from "./modal.js";
-
 // Загрузка данных при старте
 document.addEventListener("DOMContentLoaded", () => {
   fetchUserProfile();
@@ -82,25 +79,13 @@ document.querySelector('.popup_type_new-card').addEventListener("submit", (evt) 
   // addNewCard(name, link);
 });
 
-// Обработчик формы обновления аватара
-document.querySelector(".submit-avatar").addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const avatarUrl = evt.target.querySelector(".avatar-link").value;
-  updateAvatar(avatarUrl);
-});
-
-
-
-
-
-
-
-
 
 
 
 let currentCardId = null;
 let currentCardElement = null;
+
+
 
 // 📌 Функция открытия попапа удаления
 function openDeletePopup(cardId, cardElement) {
@@ -134,49 +119,4 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
 });
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  const avatarPopup = document.getElementById("avatar-popup");
-  const avatarForm = document.getElementById("avatar-form");
-  const avatarInput = document.getElementById("avatar-url");
-  const submitAvatarButton = document.getElementById("submit-avatar");
-  const avatarImage = document.querySelector(".profile__avatar"); // Аватар на странице
-  const closeAvatarPopup = document.getElementById("close-avatar-popup");
 
-  // Открытие попапа
-  document.querySelector(".profile__image").addEventListener("click", () => {
-    avatarPopup.classList.add("popup_is-opened");
-  });
-
-  // Закрытие попапа
-  closeAvatarPopup.addEventListener("click", () => {
-    avatarPopup.classList.remove("popup_is-opened");
-  });
-
-  // Обработчик формы
-  avatarForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    
-    const avatarUrl = avatarInput.value.trim();
-
-    if (!avatarUrl) {
-      alert("Введите URL аватара!"); // Минимальная валидация
-      return;
-    }
-
-    submitAvatarButton.textContent = "Сохранение..."; // UI-блокировка кнопки
-
-    updateAvatar(avatarUrl)
-      .then((data) => {
-        if (data && data.avatar) {
-          avatarImage.src = data.avatar; // Меняем аватар на странице
-        }
-        avatarPopup.classList.remove("popup_is-opened");
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => {
-        submitAvatarButton.textContent = "Сохранить"; // Возвращаем кнопку в нормальный вид
-      });
-  });
-});

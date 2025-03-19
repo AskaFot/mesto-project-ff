@@ -104,6 +104,7 @@
           class="popup__input popup__input_type_url"
           placeholder="Ссылка на картинку"
           required>
+          
 
           <span class="form__input-error link-input-error"></span>
 
@@ -126,7 +127,14 @@
     <button type="button" class="popup__close" id="close-avatar-popup">&times;</button>
     <h3 class="popup__title">Обновить аватар</h3>
     <form class="popup__form" id="avatar-form">
-      <input type="url" class="avatar-link popup__input" id="avatar-url" placeholder="Введите URL изображения" required>
+      <input type="url"
+       class="avatar-link popup__input" 
+      id="avatar-url" 
+      name="avatar-name"
+      placeholder="Введите URL изображения" 
+      required>
+      <span class="form__input-error avatar-url-error"></span>
+
       <button type="submit" class="submit-avatar popup__button" id="submit-avatar">Сохранить</button>
     </form>
   </div>

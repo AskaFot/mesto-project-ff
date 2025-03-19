@@ -70,16 +70,19 @@ export function toggleLike(cardId, isLiked) {
 
 // Обновление аватара
 export function updateAvatar(avatarUrl) {
+  console.warn("Функция updateAvatar вызвана с URL:", avatarUrl);
+
   return request(`${API_URL}/users/me/avatar`, {
     method: "PATCH",
     body: JSON.stringify({ avatar: avatarUrl }),
-  })    .then((res) => {
-    if (!res.ok) {
-      return Promise.reject(`Ошибка: ${res.status}`);
-    }
-    return res.json();
   })
-  .catch((err) => {
-    console.error("Ошибка обновления аватара:", err);
-  });
+    .then((data) => {
+      console.log("Аватар обновлён:", data);
+      return data;
+    })
+    .catch((err) => {
+      console.error("Ошибка обновления аватара:", err);
+      alert("Ошибка обновления аватара: " + (err.message || "Неизвестная ошибка"));
+      throw err;
+    });
 }
