@@ -5,7 +5,7 @@ import {
   fetchCards,
   updateUserProfile,
   addNewCard,
-  updateAvatar
+  updateAvatar,
 } from "./api.js";
 import { enableValidation, clearValidation } from "./validation.js";
 import { createCard } from "./card.js";
@@ -28,16 +28,15 @@ import {
   avatarPtofil,
   linkInput,
   formCard,
-
-  cardContainer
+  cardContainer,
 } from "./variables.js";
-
 
 // Проверяем, найдены ли все элементы
 if (!namePtofil || !aboutPtofil || !avatarPtofil || !cardContainer) {
-  console.error("❌ Ошибка: один или несколько элементов профиля/карточек не найдены в DOM!");
+  console.error(
+    "❌ Ошибка: один или несколько элементов профиля/карточек не найдены в DOM!"
+  );
 }
-
 
 // // Объект настроек
 const validationConfig = {
@@ -67,14 +66,13 @@ popupValidation.addEventListener("submit", function (evt) {
 cardElement.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
-  setLoading(evt.target.querySelector('.popup__button'), true
-)
+  setLoading(evt.target.querySelector(".popup__button"), true);
   console.log("🔄 Форма отправлена!"); // Проверяем, вызывается ли `submit` дважды
 
   const name = evt.target.querySelector('input[name="place-name"]').value;
   const link = evt.target.querySelector('input[name="link"]').value;
 
-// console.log(btn.innerText)
+  // console.log(btn.innerText)
   evt.target.reset(); // Очищаем форму сразу
 
   addNewCard(name, link)
@@ -86,20 +84,18 @@ cardElement.addEventListener("submit", (evt) => {
         if (newCard) {
           cardContainer.prepend(newCard);
         }
-        setLoading(evt.target.querySelector('.popup__button'), false
-)
+        setLoading(evt.target.querySelector(".popup__button"), false);
         closePopup(cardElement);
       }
     })
     .catch(console.error);
 });
 
-export function setLoading (btn, isLoading){
-  if(isLoading){
-    btn.textContent = 'Сохранить...'
-  }
-  else{
-    btn.textContent = 'Сохранить'
+export function setLoading(btn, isLoading) {
+  if (isLoading) {
+    btn.textContent = "Сохранить...";
+  } else {
+    btn.textContent = "Сохранить";
   }
 }
 
@@ -107,19 +103,19 @@ export function setLoading (btn, isLoading){
 export function openFoto(evt) {
   const clickedImage = evt.target; // Определяем, куда кликнули
 
-  if (clickedImage.classList.contains('card__image')) {
-
+  if (clickedImage.classList.contains("card__image")) {
     // Находим карточку, к которой относится изображение
-    const card = clickedImage.closest('.card'); // Ищем родителя `.card`
-    const cardTitle = card ? card.querySelector('.card__title') : null; // Заголовок карточки
+    const card = clickedImage.closest(".card"); // Ищем родителя `.card`
+    const cardTitle = card ? card.querySelector(".card__title") : null; // Заголовок карточки
 
     // Устанавливаем картинку и подпись
     popupImage.src = clickedImage.src;
     popupImage.alt = cardTitle.textContent; // "Фотография";
-    popupCaption.textContent = cardTitle.textContent //"Без описания";
+    popupCaption.textContent = cardTitle.textContent; //"Без описания";
     // Показываем попап
-    openPopup (popupType)  }
-};
+    openPopup(popupType);
+  }
+}
 
 // Открытие попапов
 buttonEdit.addEventListener("click", () => {
@@ -131,21 +127,26 @@ buttonEdit.addEventListener("click", () => {
 buttonAdd.addEventListener("click", () => openPopup(cardElement));
 
 // Закрытие попапов
-document.querySelector(".popup_type_edit .popup__close").addEventListener("click", () => closePopup(editElement));
-document.querySelector(".popup_type_new-card .popup__close").addEventListener("click", () => closePopup(cardElement));
-document.querySelector(".popup_type_image .popup__close").addEventListener("click", () => closePopup(popupType));
+document
+  .querySelector(".popup_type_edit .popup__close")
+  .addEventListener("click", () => closePopup(editElement));
+document
+  .querySelector(".popup_type_new-card .popup__close")
+  .addEventListener("click", () => closePopup(cardElement));
+document
+  .querySelector(".popup_type_image .popup__close")
+  .addEventListener("click", () => closePopup(popupType));
 
 // Обновление профиля
 editElement.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  setLoading(evt.target.querySelector('.popup__button'), true)
+  setLoading(evt.target.querySelector(".popup__button"), true);
 
   updateUserProfile(nameInput.value, jobInput.value)
-
     .then((userData) => {
       namePtofil.textContent = userData.name;
       aboutPtofil.textContent = userData.about;
-      setLoading(evt.target.querySelector('.popup__button'), false)
+      setLoading(evt.target.querySelector(".popup__button"), false);
 
       closePopup(editElement);
     })
@@ -156,14 +157,16 @@ document.addEventListener("DOMContentLoaded", () => {
   Promise.all([fetchUserProfile(), fetchCards()])
     .then(([userData, cards]) => {
       if (!userData || !userData._id) {
-        console.error("❌ Ошибка: данные профиля загружены некорректно!");
+        console.error("Ошибка: данные профиля загружены некорректно!");
         return;
       }
-      cardContainer.addEventListener('click', openFoto);
+      cardContainer.addEventListener("click", openFoto);
       const userId = userData._id;
       namePtofil.textContent = userData.name;
       aboutPtofil.textContent = userData.about;
-      document.querySelector(".profile__image").style.backgroundImage = `url(${userData.avatar})`;
+      document.querySelector(
+        ".profile__image"
+      ).style.backgroundImage = `url(${userData.avatar})`;
 
       cardContainer.innerHTML = ""; // Очистка контейнера перед загрузкой новых карточек
 
@@ -174,9 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(console.error);
 });
-
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const avatarPopup = document.getElementById("avatar-popup");
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Обработчик формы
   avatarForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    
+
     const avatarUrl = avatarInput.value.trim();
 
     if (!avatarUrl) {

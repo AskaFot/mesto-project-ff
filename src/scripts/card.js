@@ -1,11 +1,16 @@
 import { deleteCard, toggleLike } from "./api.js";
-import { fetchUserProfile, fetchCards, updateUserProfile, addNewCard } from "./api.js";
+import {
+  fetchUserProfile,
+  fetchCards,
+  updateUserProfile,
+  addNewCard,
+} from "./api.js";
 import { openPopup, closePopup } from "./modal.js";
 
 // Проверяем, что шаблон существует в DOM
 const cardTemplate = document.querySelector("#card-template");
 if (!cardTemplate) {
-  console.error("❌ Ошибка: #card-template не найден в DOM!");
+  console.error("Ошибка: #card-template не найден в DOM!");
 }
 
 export function createCard(cardData) {
@@ -28,13 +33,15 @@ export function createCard(cardData) {
 
   // Проверяем, существует ли owner у карточки
   const currentUser = localStorage.getItem("currentUser");
-  // ✅ Показываем кнопку удаления только владельцу
+  // Показываем кнопку удаления только владельцу
   if (cardData.owner && cardData.owner._id === currentUser) {
     buttonDelete.style.display = "block";
-    buttonDelete.addEventListener("click", () => openDeletePopup(cardData._id, cardElement));
+    buttonDelete.addEventListener("click", () =>
+      openDeletePopup(cardData._id, cardElement)
+    );
   }
 
-  // ✅ Устанавливаем состояние лайка
+  // Устанавливаем состояние лайка
   if (cardData.likes.some((user) => user._id === currentUser)) {
     buttonLike.classList.add("card__like-button_is-active");
   }
@@ -45,7 +52,9 @@ export function createCard(cardData) {
   }
 
   buttonLike.addEventListener("click", () => {
-    const isLiked = buttonLike.classList.contains("card__like-button_is-active");
+    const isLiked = buttonLike.classList.contains(
+      "card__like-button_is-active"
+    );
     toggleLike(cardData._id, isLiked)
       .then((data) => {
         likeCount.textContent = data.likes.length;
@@ -64,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Обработчик формы редактирования профиля
-document.querySelector('.popup_type_edit').addEventListener("submit", (evt) => {
+document.querySelector(".popup_type_edit").addEventListener("submit", (evt) => {
   evt.preventDefault();
   const name = evt.target.querySelector('input[name="popup_name"]').value;
   const about = evt.target.querySelector('input[name="description"]').value;
@@ -72,22 +81,19 @@ document.querySelector('.popup_type_edit').addEventListener("submit", (evt) => {
 });
 
 // Обработчик формы добавления карточки
-document.querySelector('.popup_type_new-card').addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const name = evt.target.querySelector('input[name="place-name"]').value;
-  const link = evt.target.querySelector('input[name="link"]').value;
-  // addNewCard(name, link);
-});
-
-
-
+document
+  .querySelector(".popup_type_new-card")
+  .addEventListener("submit", (evt) => {
+    evt.preventDefault();
+    const name = evt.target.querySelector('input[name="place-name"]').value;
+    const link = evt.target.querySelector('input[name="link"]').value;
+    // addNewCard(name, link);
+  });
 
 let currentCardId = null;
 let currentCardElement = null;
 
-
-
-// 📌 Функция открытия попапа удаления
+//  Функция открытия попапа удаления
 function openDeletePopup(cardId, cardElement) {
   currentCardId = cardId;
   currentCardElement = cardElement;
@@ -96,17 +102,16 @@ function openDeletePopup(cardId, cardElement) {
   openPopup(deletePopup);
 }
 
-
-// 📌 Функция закрытия попапа удаления
+//  Функция закрытия попапа удаления
 function closeDeletePopup() {
   const deletePopup = document.getElementById("delete-popup");
   closePopup(deletePopup);
 }
 
-// 📌 Обработчик кнопки подтверждения удаления
+//  Обработчик кнопки подтверждения удаления
 document.getElementById("confirmDeleteButton").addEventListener("click", () => {
   if (!currentCardId || !currentCardElement) {
-    console.error("❌ Ошибка: нет ID или элемента карточки для удаления!");
+    console.error(" Ошибка: нет ID или элемента карточки для удаления!");
     return;
   }
 
@@ -117,6 +122,3 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
     })
     .catch((err) => console.error("Ошибка удаления карточки:", err));
 });
-
-
-

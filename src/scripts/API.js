@@ -54,12 +54,12 @@ export function addNewCard(name, link) {
 // }
 
 export function deleteCard(cardId) {
-  return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" })
-    .then((res) => {
+  return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" }).then(
+    (res) => {
       if (!res) throw new Error("Ошибка удаления карточки!");
-    });
+    }
+  );
 }
-
 
 // Лайк карточки
 export function toggleLike(cardId, isLiked) {
@@ -82,7 +82,9 @@ export function updateAvatar(avatarUrl) {
     })
     .catch((err) => {
       console.error("Ошибка обновления аватара:", err);
-      alert("Ошибка обновления аватара: " + (err.message || "Неизвестная ошибка"));
+      alert(
+        "Ошибка обновления аватара: " + (err.message || "Неизвестная ошибка")
+      );
       throw err;
     });
 }
