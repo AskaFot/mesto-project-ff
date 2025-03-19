@@ -132,3 +132,51 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
     })
     .catch((err) => console.error("Ошибка удаления карточки:", err));
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const avatarPopup = document.getElementById("avatar-popup");
+  const avatarForm = document.getElementById("avatar-form");
+  const avatarInput = document.getElementById("avatar-url");
+  const submitAvatarButton = document.getElementById("submit-avatar");
+  const avatarImage = document.querySelector(".profile__avatar"); // Аватар на странице
+  const closeAvatarPopup = document.getElementById("close-avatar-popup");
+
+  // Открытие попапа
+  document.querySelector(".profile__image").addEventListener("click", () => {
+    avatarPopup.classList.add("popup_is-opened");
+  });
+
+  // Закрытие попапа
+  closeAvatarPopup.addEventListener("click", () => {
+    avatarPopup.classList.remove("popup_is-opened");
+  });
+
+  // Обработчик формы
+  avatarForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    
+    const avatarUrl = avatarInput.value.trim();
+
+    if (!avatarUrl) {
+      alert("Введите URL аватара!"); // Минимальная валидация
+      return;
+    }
+
+    submitAvatarButton.textContent = "Сохранение..."; // UI-блокировка кнопки
+
+    updateAvatar(avatarUrl)
+      .then((data) => {
+        if (data && data.avatar) {
+          avatarImage.src = data.avatar; // Меняем аватар на странице
+        }
+        avatarPopup.classList.remove("popup_is-opened");
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        submitAvatarButton.textContent = "Сохранить"; // Возвращаем кнопку в нормальный вид
+      });
+  });
+});
