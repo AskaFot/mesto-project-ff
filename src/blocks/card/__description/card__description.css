@@ -1,7 +1,10 @@
 .card__description {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background: #fff;
+  display: grid
+;
+align-items: center;
+  grid-template-rows: 1fr 1fr;
+  justify-content: space-between;
   padding: 25px 20px;
+  gap: 6px;
 }

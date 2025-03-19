@@ -126,26 +126,17 @@
     <button type="button" class="popup__close" id="close-avatar-popup">&times;</button>
     <h3 class="popup__title">Обновить аватар</h3>
     <form class="popup__form" id="avatar-form">
-      <label for="avatar-url">Введите URL нового аватара:</label>
-      <input type="url" class="avatar-link" id="avatar-url" placeholder="Введите URL изображения" required>
-      <button type="submit" class="submit-avatar" id="submit-avatar">Сохранить</button>
+      <input type="url" class="avatar-link popup__input" id="avatar-url" placeholder="Введите URL изображения" required>
+      <button type="submit" class="submit-avatar popup__button" id="submit-avatar">Сохранить</button>
     </form>
   </div>
 </div>
 
-  <!-- <div class="popup popup_type_delete">
-    <div class="popup-content">
-      <button type="button" class="popup__close"></button>
-      <h3 class="popup__title">Вы уверены</h3>
-      <button type="submit"  class="button popup__button ">Да</button>
-    </div>
-  </div> -->
-
   <div id="delete-popup" class="popup">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
-      <p>Вы уверены?</p>
-      <button class="confirm-delete"  id="confirmDeleteButton">Да</button>
+      <h3 class="popup__title">Вы уверены?</h3>
+      <button class="confirm-delete popup__button"  id="confirmDeleteButton">Да</button>
     </div>
   </div> 
 

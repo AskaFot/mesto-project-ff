@@ -22,8 +22,12 @@ import {
   namePtofil,
   aboutPtofil,
   popupCaption,
+  placeInput,
   buttonAvatar,
   avatarPtofil,
+  linkInput,
+  formCard,
+
   cardContainer
 } from "./variables.js";
 
@@ -121,6 +125,25 @@ cardElement.addEventListener("submit", (evt) => {
     .catch(console.error);
 });
 
+
+// Функция открытия фото
+export function openFoto(evt) {
+  const clickedImage = evt.target; // Определяем, куда кликнули
+
+  if (clickedImage.classList.contains('card__image')) {
+
+    // Находим карточку, к которой относится изображение
+    const card = clickedImage.closest('.card'); // Ищем родителя `.card`
+    const cardTitle = card ? card.querySelector('.card__title') : null; // Заголовок карточки
+
+    // Устанавливаем картинку и подпись
+    popupImage.src = clickedImage.src;
+    popupImage.alt = cardTitle.textContent; // "Фотография";
+    popupCaption.textContent = cardTitle.textContent //"Без описания";
+    // Показываем попап
+    openPopup (popupType)  }
+};
+
 // Открытие попапов
 buttonEdit.addEventListener("click", () => {
   nameInput.value = namePtofil.textContent;
@@ -154,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("❌ Ошибка: данные профиля загружены некорректно!");
         return;
       }
-
+      cardContainer.addEventListener('click', openFoto);
       const userId = userData._id;
       namePtofil.textContent = userData.name;
       aboutPtofil.textContent = userData.about;
