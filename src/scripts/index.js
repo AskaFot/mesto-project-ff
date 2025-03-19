@@ -5,7 +5,7 @@ import {
   fetchCards,
   updateUserProfile,
   addNewCard,
-  updateAvatar,
+  updateAvatar
 } from "./api.js";
 import { enableValidation, clearValidation } from "./validation.js";
 import { createCard } from "./card.js";
@@ -58,23 +58,65 @@ popupValidation.addEventListener("submit", function (evt) {
   clearValidation(formCard, validationConfig);
 });
 
-// Загружаем профиль и карточки при загрузке страницы
-document.addEventListener("DOMContentLoaded", () => {
-  Promise.all([fetchUserProfile(), fetchCards()])
-    .then(([userData, cards]) => {
-      if (!userData || !userData.name || !userData.about || !userData.avatar) {
-        console.error("❌ Ошибка: данные профиля загружены некорректно!");
-        return;
+// // Загружаем профиль и карточки при загрузке страницы
+// document.addEventListener("DOMContentLoaded", () => {
+//   Promise.all([fetchUserProfile(), fetchCards()])
+//     .then(([userData, cards]) => {
+//       if (!userData || !userData.name || !userData.about || !userData.avatar) {
+//         console.error("❌ Ошибка: данные профиля загружены некорректно!");
+//         return;
+//       }
+
+//       namePtofil.textContent = userData.name;
+//       aboutPtofil.textContent = userData.about;
+//       document.querySelector(".profile__image").style.backgroundImage = `url(${userData.avatar})`;
+
+//       cards.forEach((card) => {
+//         const cardEl = createCard(card);
+//         if (cardEl) cardContainer.append(cardEl);
+//       });
+//     })
+//     .catch(console.error);
+// });
+
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   Promise.all([fetchUserProfile(), fetchCards()])
+//     .then(([userData, cards]) => {
+//       const userId = userData._id; // ID текущего пользователя
+//       const cardContainer = document.querySelector(".places__list");
+
+//       cards.forEach((card) => {
+//         const cardElement = createCard(card, userId);
+//         if (cardElement) cardContainer.append(cardElement);
+//       });
+//     })
+//     .catch(console.error);
+// });
+
+// Добавление новой карточки
+cardElement.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+
+  console.log("🔄 Форма отправлена!"); // Проверяем, вызывается ли `submit` дважды
+
+  const name = evt.target.querySelector('input[name="place-name"]').value;
+  const link = evt.target.querySelector('input[name="link"]').value;
+
+  evt.target.reset(); // Очищаем форму сразу
+
+  addNewCard(name, link)
+    .then((cardData) => {
+      if (cardData) {
+        console.log("🆕 Добавляем карточку:", cardData);
+
+        const newCard = createCard(cardData, cardData.owner._id);
+        if (newCard) {
+          cardContainer.prepend(newCard);
+        }
+
+        closePopup(cardElement);
       }
-
-      namePtofil.textContent = userData.name;
-      aboutPtofil.textContent = userData.about;
-      document.querySelector(".profile__image").style.backgroundImage = `url(${userData.avatar})`;
-
-      cards.forEach((card) => {
-        const cardEl = createCard(card);
-        if (cardEl) cardContainer.append(cardEl);
-      });
     })
     .catch(console.error);
 });
@@ -105,19 +147,43 @@ editElement.addEventListener("submit", (evt) => {
     .catch(console.error);
 });
 
-// Добавление карточки
-cardElement.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const name = evt.target.querySelector('input[name="place-name"]').value;
-  const link = evt.target.querySelector('input[name="link"]').value;
-
-  addNewCard(name, link)
-    .then((cardData) => {
-      if (cardData) {
-        cardContainer.prepend(createCard(cardData));
-        evt.target.reset();
-        closePopup(cardElement);
+document.addEventListener("DOMContentLoaded", () => {
+  Promise.all([fetchUserProfile(), fetchCards()])
+    .then(([userData, cards]) => {
+      if (!userData || !userData._id) {
+        console.error("❌ Ошибка: данные профиля загружены некорректно!");
+        return;
       }
+
+      const userId = userData._id;
+      namePtofil.textContent = userData.name;
+      aboutPtofil.textContent = userData.about;
+      document.querySelector(".profile__image").style.backgroundImage = `url(${userData.avatar})`;
+
+      cardContainer.innerHTML = ""; // Очистка контейнера перед загрузкой новых карточек
+
+      cards.forEach((card) => {
+        const cardEl = createCard(card, userId);
+        if (cardEl) cardContainer.append(cardEl);
+      });
     })
     .catch(console.error);
 });
+
+
+// // Добавление карточки
+// cardElement.addEventListener("submit", (evt) => {
+//   evt.preventDefault();
+//   const name = evt.target.querySelector('input[name="place-name"]').value;
+//   const link = evt.target.querySelector('input[name="link"]').value;
+
+//   addNewCard(name, link)
+//     .then((cardData) => {
+//       if (cardData) {
+//         cardContainer.prepend(createCard(cardData));
+//         evt.target.reset();
+//         closePopup(cardElement);
+//       }
+//     })
+//     .catch(console.error);
+// });

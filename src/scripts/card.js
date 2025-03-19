@@ -26,13 +26,15 @@ export function createCard(cardData) {
 
   // Проверяем, существует ли owner у карточки
   const currentUser = localStorage.getItem("currentUser");
+  // ✅ Показываем кнопку удаления только владельцу
   if (cardData.owner && cardData.owner._id === currentUser) {
     buttonDelete.style.display = "block";
-    buttonDelete.addEventListener("click", () => {
-      deleteCard(cardData._id).then(() => cardElement.remove());
-    });
-  } else {
-    buttonDelete.style.display = "none";
+    buttonDelete.addEventListener("click", () => openDeletePopup(cardData._id, cardElement));
+  }
+
+  // ✅ Устанавливаем состояние лайка
+  if (cardData.likes.some((user) => user._id === currentUser)) {
+    buttonLike.classList.add("card__like-button_is-active");
   }
 
   // Лайки
@@ -77,7 +79,7 @@ document.querySelector('.popup_type_new-card').addEventListener("submit", (evt) 
   evt.preventDefault();
   const name = evt.target.querySelector('input[name="place-name"]').value;
   const link = evt.target.querySelector('input[name="link"]').value;
-  addNewCard(name, link);
+  // addNewCard(name, link);
 });
 
 // Обработчик формы обновления аватара
@@ -85,4 +87,48 @@ document.querySelector(".submit-avatar").addEventListener("submit", (evt) => {
   evt.preventDefault();
   const avatarUrl = evt.target.querySelector(".avatar-link").value;
   updateAvatar(avatarUrl);
+});
+
+
+
+
+
+
+
+
+
+
+
+let currentCardId = null;
+let currentCardElement = null;
+
+// 📌 Функция открытия попапа удаления
+function openDeletePopup(cardId, cardElement) {
+  currentCardId = cardId;
+  currentCardElement = cardElement;
+
+  const deletePopup = document.getElementById("delete-popup");
+  openPopup(deletePopup);
+}
+
+
+// 📌 Функция закрытия попапа удаления
+function closeDeletePopup() {
+  const deletePopup = document.getElementById("delete-popup");
+  closePopup(deletePopup);
+}
+
+// 📌 Обработчик кнопки подтверждения удаления
+document.getElementById("confirmDeleteButton").addEventListener("click", () => {
+  if (!currentCardId || !currentCardElement) {
+    console.error("❌ Ошибка: нет ID или элемента карточки для удаления!");
+    return;
+  }
+
+  deleteCard(currentCardId)
+    .then(() => {
+      currentCardElement.remove(); // Удаляем карточку из DOM
+      closeDeletePopup();
+    })
+    .catch((err) => console.error("Ошибка удаления карточки:", err));
 });

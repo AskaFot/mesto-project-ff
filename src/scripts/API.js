@@ -49,9 +49,17 @@ export function addNewCard(name, link) {
 }
 
 // Удаление карточки
+// export function deleteCard(cardId) {
+//   return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" });
+// }
+
 export function deleteCard(cardId) {
-  return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" });
+  return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" })
+    .then((res) => {
+      if (!res) throw new Error("Ошибка удаления карточки!");
+    });
 }
+
 
 // Лайк карточки
 export function toggleLike(cardId, isLiked) {
@@ -65,8 +73,13 @@ export function updateAvatar(avatarUrl) {
   return request(`${API_URL}/users/me/avatar`, {
     method: "PATCH",
     body: JSON.stringify({ avatar: avatarUrl }),
-  }).catch((err) => {
+  })    .then((res) => {
+    if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`);
+    }
+    return res.json();
+  })
+  .catch((err) => {
     console.error("Ошибка обновления аватара:", err);
-    return {};
   });
 }

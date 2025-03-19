@@ -10,6 +10,7 @@ export function openPopup(popup) {
     popup.classList.add("popup_is-animated");
   }, 200);
   document.addEventListener("keydown", handleEscape);
+  popup.addEventListener("mousedown", clickOvarlay);
 }
 
 export function closePopup(popup) {

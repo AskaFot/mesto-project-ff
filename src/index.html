@@ -121,7 +121,7 @@
   </div>
 
 <!-- Форма для редактирования аватара -->
-<div class="popup" id="avatar-popup" style="display:none;">
+<div class="popup" id="avatar-popup">
   <div class="popup__content">
     <button type="button" class="popup__close" id="close-avatar-popup">&times;</button>
     <h3 class="popup__title">Обновить аватар</h3>
@@ -133,13 +133,21 @@
   </div>
 </div>
 
-  <div id="delete-popup" class="popup">
+  <!-- <div class="popup popup_type_delete">
     <div class="popup-content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Вы уверены</h3>
+      <button type="submit"  class="button popup__button ">Да</button>
+    </div>
+  </div> -->
+
+  <div id="delete-popup" class="popup">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
       <p>Вы уверены?</p>
       <button class="confirm-delete"  id="confirmDeleteButton">Да</button>
     </div>
-  </div>
-
+  </div> 
 
   <template id="card-template">
     <li class="places__item card">

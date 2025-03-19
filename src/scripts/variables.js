@@ -43,3 +43,8 @@ export const popupType = document.querySelector('.popup_type_image'); // Нах�
 export const popupImage = popupType.querySelector('.popup__image'); // Картинка в попапе
 export const popupCaption = popupType.querySelector('.popup__caption'); // Подпись в попапе
 export const imgClose = popupType.querySelector('.popup__close');
+
+//удаление карточки
+// export const deleteElement = document.querySelector('.popup_type_delete') // Находим попап
+// export const deleteClose = deleteElement.querySelector('.popup__close');
+// export const confirmDeleteButton = deleteElement.querySelector('.popup__button')
