@@ -96,10 +96,10 @@ cardElement.addEventListener("submit", (evt) => {
 
 export function setLoading (btn, isLoading){
   if(isLoading){
-    btn.innerText = 'Сохранить...'
+    btn.textContent = 'Сохранить...'
   }
   else{
-    btn.innerText = 'Сохранить'
+    btn.textContent = 'Сохранить'
   }
 }
 
