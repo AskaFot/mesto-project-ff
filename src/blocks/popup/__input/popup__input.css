@@ -10,7 +10,8 @@
   margin-bottom: 10px;
 }
 .form__input-error{
-  color: red;
+  color: #ff0000;
+  font-size: 12px;
 }
 
 .popup__input:last-of-type {
