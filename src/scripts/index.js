@@ -54,17 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
 //  Включаем валидацию
 enableValidation(validationConfig);
 
-// popupValidation.addEventListener("submit", function (evt) {
-//   evt.preventDefault(); // предотвратить перезагрузку страницы
-
-//   // Очищаем значения в полях
-//   placeInput.value = "";
-//   linkInput.value = "";
-
-//   // Очищаем ошибки валидации
-// clearValidation(jobInput,nameInput);
-// });
-
+export function setLoading(btn, isLoading) {
+  if (isLoading) {
+    btn.textContent = "Сохранить...";
+  } else {
+    btn.textContent = "Сохранить";
+  }
+}
 
 /// Добавление новой карточки
 cardPopup.addEventListener("submit", (evt) => {
@@ -87,20 +83,16 @@ cardPopup.addEventListener("submit", (evt) => {
         if (newCard) {
           cardContainer.prepend(newCard);
         }
-        setLoading(evt.submitter, false);
         closePopup(cardPopup);
       }
     })
-    .catch(console.error);
+    
+    .catch(console.error)
+    .finally(() => {
+      setLoading(evt.submitter, false);
+    });
   });
   
-export function setLoading(btn, isLoading) {
-  if (isLoading) {
-    btn.textContent = "Сохранить...";
-  } else {
-    btn.textContent = "Сохранить";
-  }
-}
 
 // Функция открытия фото
 export function openFoto(evt) {
@@ -127,19 +119,19 @@ buttonEdit.addEventListener("click", () => {
   openPopup(profilePopup);
 });
 
-const settings = {
-  formInput: ".popup__input", 
-  submitButtonSelector: ".popup__button"
-};
+// const settings = {
+//   formInput: ".popup__input", 
+//   submitButtonSelector: ".popup__button"
+// };
 
 buttonAdd.addEventListener("click", () => {
-  clearValidation(formCard,settings); // Очистка формы перед открытием попапа
+  clearValidation(formCard,validationConfig); // Очистка формы перед открытием попапа
   openPopup(cardPopup); // Открытие попапа
 });
 
 
 avatarImage.addEventListener("click", () => {
-  clearValidation(avatarForm,settings); // Очистка формы перед открытием попапа
+  clearValidation(avatarForm,validationConfig); // Очистка формы перед открытием попапа
   openPopup(avatarPopup); // Открытие попапа
 });
 
@@ -219,7 +211,7 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
     //   return;
     // }
 
-    setLoading(evt.submitter, true);
+    setLoading(event.submitter, true);
     event.target.reset();
     updateAvatar(avatarUrl)
       .then((data) => {
@@ -233,7 +225,7 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
         console.error(err);
       })
       .finally(() => {
-        setLoading(evt.submitter, false);
+        setLoading(event.submitter, false);
       });
   });
 
@@ -284,3 +276,6 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
     })
     .catch((err) => console.error("Ошибка удаления карточки:", err));
 });
+
+//Если интересно, посмотрите, как можно избавиться от дублирования изменения текста кнопки сабмита, отлов ошибок и очистку формы в каждом запросе  Пример оптимизации обработчика сабмита формы профиля
+// вот это действительно интересно, после сдачи работы посмотрю 

@@ -1,21 +1,23 @@
+import {validationConfig}from "./variables.js";
+
 // Функция, которая добавляет класс с ошибкой
-const showInputError = (formElement, formInput, errorMessage) => {
+const showInputError = (formElement, formInput, errorMessage, validationConfig) => {
   const errorElement = formElement.querySelector(`.${formInput.id}-error`);
-  formInput.classList.add("form__input_type_error");
+  formInput.classList.add(validationConfig.inputErrorClass);
   errorElement.textContent = errorMessage;
-  errorElement.classList.add("form__input-error_active");
+  errorElement.classList.add(validationConfig.errorClass);
 };
 
 // Функция, которая удаляет класс с ошибкой
-const hideInputError = (formElement, formInput) => {
+const hideInputError = (formElement, formInput,validationConfig) => {
   const errorElement = formElement.querySelector(`.${formInput.id}-error`);
-  formInput.classList.remove("form__input_type_error");
+  formInput.classList.remove(validationConfig.inputErrorClass);
   errorElement.textContent = "";
-  errorElement.classList.remove("form__input-error_active");
+  errorElement.classList.remove(validationConfig.errorClass);
 };
 
 // Функция, которая проверяет валидность поля
-const isValid = (formElement, formInput) => {
+const isValid = (formElement, formInput,validationConfig) => {
   if (formInput.validity.patternMismatch) {
     // встроенный метод setCustomValidity принимает на вход строку
     // и заменяет ею стандартное сообщение об ошибке
@@ -31,39 +33,44 @@ const isValid = (formElement, formInput) => {
     formInput.setCustomValidity("");
   }
   if (!formInput.checkValidity()) {
-    showInputError(formElement, formInput, formInput.validationMessage);
+    showInputError(formElement, formInput, formInput.validationMessage,validationConfig);
   } else {
-    hideInputError(formElement, formInput);
+    hideInputError(formElement, formInput,validationConfig);
   }
 };
 
-function setEventListeners(formElement) {
-  const inputList = Array.from(formElement.querySelectorAll(".popup__input"));
-  const buttonElement = formElement.querySelector(".popup__button");
+function setEventListeners(formElement,validationConfig) {
+  const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
+  const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
   if (buttonElement) {
-    toggleButtonState(inputList, buttonElement);
+    toggleButtonState(inputList, buttonElement,validationConfig);
   }
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", function () {
-      isValid(formElement, inputElement);
+      isValid(formElement, inputElement, validationConfig);
       if (buttonElement) {
-        toggleButtonState(inputList, buttonElement);
+        toggleButtonState(inputList, buttonElement, validationConfig);
       }
     });
   });
 }
 
-export function enableValidation() {
-  const formList = Array.from(document.querySelectorAll(".popup__form"));
+
+//Функция enableValidation() выполняет следующие действия:
+
+//Находит все формы на странице с классом .popup__form и сохраняет их в массив formList.
+//Перебирает каждую форму и добавляет обработчик события submit, который предотвращает стандартное поведение формы (evt.preventDefault();). Это означает, что отправка формы в браузере не произойдет.
+//Вызывает функцию setEventListeners(formElement) для каждой формы. 
+export function enableValidation(validationConfig) {
+  const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
   formList.forEach((formElement) => {
     formElement.addEventListener("submit", function (evt) {
       evt.preventDefault();
     });
-    setEventListeners(formElement);
+    setEventListeners(formElement, validationConfig);
   });
 }
 
-// enableValidation();
 
 // Если поле не валидно, колбэк вернёт true
 // Обход массива прекратится и вся функция
@@ -74,24 +81,31 @@ export function hasInvalidInput(inputList) {
   });
 }
 
-export function toggleButtonState(inputList, buttonElement) {
-  if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add("button_inactive");
+export function toggleButtonState(inputList, buttonElement, validationConfig) {
+  if (hasInvalidInput(inputList,validationConfig)) {
+    buttonElement.classList.add("validationConfig.inactiveButtonClass");
     buttonElement.setAttribute("disabled", true);
   } else {
-    buttonElement.classList.remove("button_inactive");
+    buttonElement.classList.remove("validationConfig.inactiveButtonClass");
     buttonElement.removeAttribute("disabled");
   }
 }
 
-export function clearValidation(formElement, settings) {
+//Функция clearValidation(formElement, settings) выполняет следующие действия:
+
+//Находит все поля ввода внутри переданного элемента formElement, используя селектор settings.formInput.
+//Создаёт массив inputList, содержащий все найденные поля ввода.
+//Очищает значения полей (input.value = ""), то есть удаляет введённый текст из всех полей формы.
+//Вызывает функцию hideInputError() для каждого поля ввода, скрывая возможные сообщения об ошибках в
+export function clearValidation(formElement, validationConfig) {
   const inputList = Array.from(
-    formElement.querySelectorAll(settings.formInput)
+    formElement.querySelectorAll(validationConfig.inputSelector)
   );
-  // const buttonElement = formElement.querySelector(settings.submitButtonSelector);
+  const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
 
   inputList.forEach((input) => {
     input.value = ""; // очищаем значение каждого поля
-    hideInputError(formElement, input, settings); // скрываем ошибку
+    hideInputError(formElement, input, validationConfig); // скрываем ошибку
   });
+  toggleButtonState(inputList, buttonElement, validationConfig);
 }
