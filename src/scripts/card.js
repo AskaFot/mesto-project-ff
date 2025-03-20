@@ -66,59 +66,24 @@ export function createCard(cardData) {
   return cardElement;
 }
 
-// Загрузка данных при старте
-document.addEventListener("DOMContentLoaded", () => {
-  fetchUserProfile();
-  fetchCards();
-});
 
-// Обработчик формы редактирования профиля
-document.querySelector(".popup_type_edit").addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const name = evt.target.querySelector('input[name="popup_name"]').value;
-  const about = evt.target.querySelector('input[name="description"]').value;
-  updateUserProfile(name, about);
-});
-
-// Обработчик формы добавления карточки
-document
-  .querySelector(".popup_type_new-card")
-  .addEventListener("submit", (evt) => {
-    evt.preventDefault();
-    const name = evt.target.querySelector('input[name="place-name"]').value;
-    const link = evt.target.querySelector('input[name="link"]').value;
-    // addNewCard(name, link);
-  });
 
 let currentCardId = null;
-let currentCardElement = null;
+let currentCardPopup = null;
 
 //  Функция открытия попапа удаления
-function openDeletePopup(cardId, cardElement) {
+export function openDeletePopup(cardId, cardPopup) {
   currentCardId = cardId;
-  currentCardElement = cardElement;
+  currentCardPopup = cardPopup;
 
   const deletePopup = document.getElementById("delete-popup");
   openPopup(deletePopup);
 }
 
 //  Функция закрытия попапа удаления
-function closeDeletePopup() {
+export function closeDeletePopup() {
   const deletePopup = document.getElementById("delete-popup");
   closePopup(deletePopup);
 }
 
-//  Обработчик кнопки подтверждения удаления
-document.getElementById("confirmDeleteButton").addEventListener("click", () => {
-  if (!currentCardId || !currentCardElement) {
-    console.error(" Ошибка: нет ID или элемента карточки для удаления!");
-    return;
-  }
 
-  deleteCard(currentCardId)
-    .then(() => {
-      currentCardElement.remove(); // Удаляем карточку из DOM
-      closeDeletePopup();
-    })
-    .catch((err) => console.error("Ошибка удаления карточки:", err));
-});

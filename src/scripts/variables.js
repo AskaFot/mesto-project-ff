@@ -11,15 +11,15 @@ export const cardForm = document.querySelector('.popup__form_card');
 export const popupValidation = document.querySelector('.popup__form');
 export const elementCard = cardContainer.querySelector('.places__item')
 export const buttonAvatar = container.querySelector(".submit-avatar");
-export const avatarPtofil = document.querySelector(".profile__image");
+export const avatarImage = document.querySelector(".profile__image");
 
 
 
 // Блок редактирования профиля
-export const editElement = document.querySelector('.popup_type_edit');
-export const formEdit = editElement.querySelector('.popup__form');
+export const profilePopup  = document.querySelector('.popup_type_edit'); // editElement
+export const formEdit = profilePopup.querySelector('.popup__form');
 export const buttonEdit = container.querySelector(".profile__edit-button");
-export const editClose = editElement.querySelector('.popup__close');
+export const editClose = profilePopup.querySelector('.popup__close');
 export const editSave= formEdit.querySelector('.popup__button');
 export const namePtofil = document.querySelector(".profile__title");
 export const aboutPtofil = document.querySelector(".profile__description");
@@ -28,10 +28,10 @@ export const jobInput = formEdit.querySelector('input[name="description"]');
 
 
 // Блок создания карточки
-export const cardElement = document.querySelector('.popup_type_new-card');
-export const formCard = cardElement.querySelector('.popup__form');
+export const cardPopup  = document.querySelector('.popup_type_new-card'); //cardElement
+export const formCard = cardPopup.querySelector('.popup__form');
 export const buttonAdd = container.querySelector('.profile__add-button');
-export const cardClose = cardElement.querySelector('.popup__close');
+export const cardClose = cardPopup.querySelector('.popup__close');
 export const placePtofil = document.querySelector('.popup__input_type_card-name')
 export const linkPtofil = document.querySelector(".popup__input_type_url");
 export const placeInput = formCard.querySelector('input[name="place-name"]');
@@ -39,10 +39,10 @@ export const linkInput = formCard.querySelector('input[name="link"]');
 
 
 // Блок открытия карточки
-export const popupType = document.querySelector('.popup_type_image'); // Находим попап
-export const popupImage = popupType.querySelector('.popup__image'); // Картинка в попапе
-export const popupCaption = popupType.querySelector('.popup__caption'); // Подпись в попапе
-export const imgClose = popupType.querySelector('.popup__close');
+export const imagePopup  = document.querySelector('.popup_type_image'); // Находим попап popupType
+export const popupImage = imagePopup.querySelector('.popup__image'); // Картинка в попапе
+export const popupCaption = imagePopup.querySelector('.popup__caption'); // Подпись в попапе
+export const imgClose = imagePopup.querySelector('.popup__close');
 
 //удаление карточки
 // export const deleteElement = document.querySelector('.popup_type_delete') // Находим попап

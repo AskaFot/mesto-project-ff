@@ -5,9 +5,10 @@
 // функция-обработчик события клика по оверлею;
 
 export function openPopup(popup) {
-  popup.classList.add("popup_is-opened");
+  popup.classList.add("popup_is-animated");
+
   setTimeout(() => {
-    popup.classList.add("popup_is-animated");
+    popup.classList.add("popup_is-opened");
   }, 200);
   document.addEventListener("keydown", handleEscape);
   popup.addEventListener("mousedown", clickOvarlay);
@@ -43,3 +44,30 @@ export function handleEscape(evt) {
     closePopup(openedPopup);
   }
 }
+
+// let currentCardId = null;
+// let currentCardPopup = null;
+
+
+// export function openDeletePopup(cardId, cardPopup) {
+//   if (!cardId || !cardPopup) {
+//     console.error("❌ Ошибка: `cardId` или `currentCardPopup` не переданы!", { cardId, cardPopup });
+//     return;
+//   }
+
+//   console.log("🗑 Открываем попап удаления. ID карточки:", cardId);
+
+//   currentCardId = cardId;
+//   currentCardPopup = cardPopup;
+
+//   const deletePopup = document.getElementById("delete-popup");
+//   openPopup(deletePopup);
+// }
+
+
+// //  Функция закрытия попапа удаления
+// export function closeDeletePopup() {
+//   const deletePopup = document.getElementById("delete-popup");
+//   closePopup(deletePopup);
+// }
+
