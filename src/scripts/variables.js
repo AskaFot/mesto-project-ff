@@ -10,8 +10,16 @@ export const profileForm = document.querySelector('.popup__form_profile');
 export const cardForm = document.querySelector('.popup__form_card');
 export const popupValidation = document.querySelector('.popup__form');
 export const elementCard = cardContainer.querySelector('.places__item')
+
+//аватар
 export const buttonAvatar = container.querySelector(".submit-avatar");
 export const avatarImage = document.querySelector(".profile__image");
+export const avatarPopup = document.getElementById("avatar-popup");
+export const avatarForm = document.getElementById("avatar-form"); 
+export const avatarInput = document.getElementById("avatar-url"); 
+export const submitAvatarButton = document.getElementById("submit-avatar"); 
+export const closeAvatarPopup = document.getElementById("close-avatar-popup");
+export const inputSelector = document.querySelector(".popup__input");
 
 
 
@@ -29,7 +37,7 @@ export const jobInput = formEdit.querySelector('input[name="description"]');
 
 // Блок создания карточки
 export const cardPopup  = document.querySelector('.popup_type_new-card'); //cardElement
-export const formCard = cardPopup.querySelector('.popup__form');
+export const formCard = document.getElementById('popup__form-place');
 export const buttonAdd = container.querySelector('.profile__add-button');
 export const cardClose = cardPopup.querySelector('.popup__close');
 export const placePtofil = document.querySelector('.popup__input_type_card-name')
@@ -48,3 +56,15 @@ export const imgClose = imagePopup.querySelector('.popup__close');
 // export const deleteElement = document.querySelector('.popup_type_delete') // Находим попап
 // export const deleteClose = deleteElement.querySelector('.popup__close');
 // export const confirmDeleteButton = deleteElement.querySelector('.popup__button')
+
+
+
+// // Объект настроек
+export const validationConfig = {
+  formSelector: ".popup__form", // Селектор для форм
+  inputSelector: ".popup__input", // Селектор для полей ввода
+  submitButtonSelector: ".popup__button", // Селектор для кнопки отправки
+  inactiveButtonClass: "popup__button_disabled", // Класс для неактивной кнопки
+  inputErrorClass: "popup__input_type_error", // Класс для полей с ошибками
+  errorClass: "popup__error_visible", // Класс для сообщения об ошибке
+};
