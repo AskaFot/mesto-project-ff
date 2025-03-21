@@ -9,19 +9,18 @@ import {
   deleteCard
 } from "./api.js";
 import { enableValidation, clearValidation } from "./validation.js";
-import { createCard,closeDeletePopup,openDeletePopup } from "./card.js";
+import { createCard,openDeletePopup } from "./card.js";
 import {
   nameInput,
-  popupValidation,
-  closeAvatarPopup,submitAvatarButton,avatarInput,avatarForm,
+  avatarInput,
+  avatarForm,
   jobInput,
   buttonEdit,
+  placeInput,
   formCard,
   avatarPopup,
-  inputSelector,
   buttonAdd,
   validationConfig,
-  buttonDelete,
   profilePopup,
   cardPopup,
   imagePopup,
@@ -29,29 +28,17 @@ import {
   namePtofil,
   aboutPtofil,
   popupCaption,
-  placeInput,
-  buttonAvatar,
   avatarImage,
   linkInput,
-  cardForm,
   cardContainer,
 } from "./variables.js";
 
 // Проверяем, найдены ли все элементы
 if (!namePtofil || !aboutPtofil || !avatarImage || !cardContainer) {
   console.error(
-    "❌ Ошибка: один или несколько элементов профиля/карточек не найдены в DOM!"
+    "Ошибка: один или несколько элементов профиля/карточек не найдены в DOM!"
   );
 }
-
-// Загрузка данных при старте
-// document.addEventListener("DOMContentLoaded", () => {
-//   fetchUserProfile();
-//   fetchCards();
-// });
-
-
-
 
 //  Включаем валидацию
 enableValidation(validationConfig);
@@ -69,19 +56,19 @@ cardPopup.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
   setLoading(evt.submitter, true);
-  console.log("🔄 Форма отправлена!"); // Проверяем, вызывается ли `submit` дважды
+  console.log(" Форма отправлена!"); // Проверяем, вызывается ли `submit` дважды
 
-  const name = evt.target.querySelector('input[name="place-name"]').value;
-  const link = evt.target.querySelector('input[name="link"]').value;
+  const name = evt.target.querySelector(placeInput).value;
+  const link = evt.target.querySelector(linkInput).value;
 
   // console.log(btn.innerText)
 
   addNewCard(name, link)
     .then((cardData) => {
       if (cardData) {
-        console.log("🆕 Добавляем карточку:", cardData);
+        console.log(" Добавляем карточку:", cardData);
 
-        const newCard = createCard(cardData, cardData.owner._id);
+        const newCard = createCard(cardData, cardData.owner._id,openDeletePopup, openFoto);
         if (newCard) {
           cardContainer.prepend(newCard);
         }
@@ -121,11 +108,6 @@ buttonEdit.addEventListener("click", () => {
   openPopup(profilePopup);
 });
 
-// const settings = {
-//   formInput: ".popup__input", 
-//   submitButtonSelector: ".popup__button"
-// };
-
 buttonAdd.addEventListener("click", () => {
   clearValidation(formCard,validationConfig); // Очистка формы перед открытием попапа
   openPopup(cardPopup); // Открытие попапа
@@ -137,16 +119,9 @@ avatarImage.addEventListener("click", () => {
   openPopup(avatarPopup); // Открытие попапа
 });
 
-
-// Закрытие попапов
-// profilePopup.addEventListener("click", () => closePopup(profilePopup));
-// cardPopup .addEventListener("click", () => closePopup(cardPopup));
-// imagePopup.addEventListener("click", () => closePopup(imagePopup));
-
 // Обновление профиля
 profilePopup.addEventListener("submit", async (evt) => {
   evt.preventDefault();
-  // clearValidation(jobInput,nameInput);
   const submitButton = evt.target.querySelector(".popup__button");
   setLoading(evt.submitter, true);
 
@@ -156,34 +131,11 @@ profilePopup.addEventListener("submit", async (evt) => {
     aboutPtofil.textContent = userData.about;
     closePopup(profilePopup);
   } catch (error) {
-    console.error("❌ Ошибка обновления профиля:", error);
+    console.error(" Ошибка обновления профиля:", error);
   } finally {
     setLoading(evt.submitter, false);
   }
 });
-
-
-  // Promise.all([fetchUserProfile(), fetchCards()])
-  //   .then(([userData, cards]) => {
-  //     if (!userData || !userData._id) {
-  //       console.error("Ошибка: данные профиля загружены некорректно!");
-  //       return;
-  //     }
-  //     cardContainer.addEventListener("click", openFoto); // исправить все 3 обработчика нужно навешивать во время создания карточки, а не с помощью делегирования событий. В будущем может быть 2-3 секции. В итоге нужно будет везде устанавливать одинаковые обработчики. Нужно найти сердечко, картинку и кнопку удаления и навесить на них конкретно свои обработчики во время создания карточки.
-  //     const userId = userData._id;
-  //     namePtofil.textContent = userData.name;
-  //     aboutPtofil.textContent = userData.about;
-  //     avatarImage.style.backgroundImage = `url(${userData.avatar})`;//✅
-
-  //     // cardContainer.innerHTML = ""; // Очистка контейнера перед загрузкой новых карточек
-
-  //     cards.forEach((card) => {
-  //       const cardEl = createCard(card, userId);
-  //       if (cardEl) cardContainer.append(cardEl);
-  //     });
-  //   })
-  //   .catch(console.error);
-
 
   //загружает данные и сразу создаёт карточки
   Promise.all([fetchUserProfile(), fetchCards()])
@@ -198,7 +150,7 @@ profilePopup.addEventListener("submit", async (evt) => {
     aboutPtofil.textContent = userData.about;
     avatarImage.style.backgroundImage = `url(${userData.avatar})`;
     cards.forEach((card) => {
-      const cardEl = createCard(card, userId);
+      const cardEl = createCard(card, userId,openFoto);
       if (cardEl) cardContainer.append(cardEl);
     });
   })
@@ -208,14 +160,7 @@ profilePopup.addEventListener("submit", async (evt) => {
   // Обработчик смены аваара
   avatarForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    // clearValidation(avatarForm);
     const avatarUrl = avatarInput.value.trim();
-
-    // if (!avatarUrl) {
-    //   alert("Введите URL аватара!"); // Минимальная валидация
-    //   return;
-    // }
-
     setLoading(event.submitter, true);
     event.target.reset();
     updateAvatar(avatarUrl)
@@ -238,8 +183,8 @@ profilePopup.addEventListener("submit", async (evt) => {
 // Обработчик формы редактирования профиля
 profilePopup.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  const name = evt.target.querySelector('input[name="popup_name"]').value;
-  const about = evt.target.querySelector('input[name="description"]').value;
+  const name = evt.target.querySelector(nameInput).value;
+  const about = evt.target.querySelector(jobInput).value;
   updateUserProfile(name, about);
 });
 
@@ -247,29 +192,13 @@ profilePopup.addEventListener("submit", (evt) => {
 cardPopup
   .addEventListener("submit", (evt) => {
     evt.preventDefault();
-    const name = evt.target.querySelector('input[name="place-name"]').value;
-    const link = evt.target.querySelector('input[name="link"]').value;
+    const name = evt.target.querySelector(placeInput).value;
+    const link = evt.target.querySelector(linkInput).value;
     // addNewCard(name, link);
   });
 
-// let currentCardId = null;
-// let currentCardPopup = null;
 
 //  Обработчик кнопки подтверждения удаления
-
-// buttonDelete.addEventListener("click", () => {
-//   if (!currentCardId || !currentCardPopup) {
-//     console.error(" Ошибка: нет ID или элемента карточки для удаления!");
-//     return;
-//   }
-
-//   deleteCard(currentCardId)
-//     .then(() => {
-//       currentCardPopup.remove(); // Удаляем карточку из DOM
-//       closeDeletePopup();
-//     })
-//     .catch((err) => console.error("Ошибка удаления карточки:", err));
-// });
 let currentCardId = null; // Предполагаем, что ID хранится в data-id
 let currentCardElement = null;
 

@@ -1,4 +1,3 @@
-import {validationConfig}from "./variables.js";
 
 // Функция, которая добавляет класс с ошибкой
 const showInputError = (formElement, formInput, errorMessage, validationConfig) => {
@@ -15,6 +14,7 @@ const hideInputError = (formElement, formInput,validationConfig) => {
   errorElement.textContent = "";
   errorElement.classList.remove(validationConfig.errorClass);
 };
+
 
 // Функция, которая проверяет валидность поля
 const isValid = (formElement, formInput,validationConfig) => {
