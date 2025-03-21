@@ -11,12 +11,24 @@ const request = (url, options) =>
   }).then((res) => (res.ok ? res.json() : Promise.reject(res.status)));
 
 // Загрузка профиля
+// export function fetchUserProfile() {
+//   return request(`${API_URL}/users/me`).catch((err) => {
+//     console.error("Ошибка загрузки профиля:", err);
+//     return {};
+//   });
+// }
 export function fetchUserProfile() {
-  return request(`${API_URL}/users/me`).catch((err) => {
-    console.error("Ошибка загрузки профиля:", err);
-    return {};
-  });
+  return request(`${API_URL}/users/me`) // Отправляем GET-запрос
+    .then((data) => {
+      console.log("Данные пользователя получены:", data);
+      return data; // Здесь будет объект с ID и именем пользователя
+    })
+    .catch((err) => {
+      console.error("Ошибка загрузки профиля:", err);
+      throw err;
+    });
 }
+
 
 // Загрузка карточек
 export function fetchCards() {
@@ -53,10 +65,18 @@ export function addNewCard(name, link) {
 //   return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" });
 // }
 
+// export function deleteCard(cardId) {
+//   return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" }).then(
+//     (res) => {
+//       if (!res) throw new Error("Ошибка удаления карточки!");
+//     }
+//   );
+// }
 export function deleteCard(cardId) {
-  return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" }).then(
-    (res) => {
-      if (!res) throw new Error("Ошибка удаления карточки!");
+  return request(`${API_URL}/cards/${cardId}`, { method: "DELETE" }).catch(
+    (err) => {
+      console.error("Ошибка удаления карточки:", err);
+      throw err;
     }
   );
 }

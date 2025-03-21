@@ -6,6 +6,7 @@ import {
   updateUserProfile,
   addNewCard,
   updateAvatar,
+  deleteCard
 } from "./api.js";
 import { enableValidation, clearValidation } from "./validation.js";
 import { createCard,closeDeletePopup,openDeletePopup } from "./card.js";
@@ -20,6 +21,7 @@ import {
   inputSelector,
   buttonAdd,
   validationConfig,
+  buttonDelete,
   profilePopup,
   cardPopup,
   imagePopup,
@@ -43,10 +45,10 @@ if (!namePtofil || !aboutPtofil || !avatarImage || !cardContainer) {
 }
 
 // Загрузка данных при старте
-document.addEventListener("DOMContentLoaded", () => {
-  fetchUserProfile();
-  fetchCards();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   fetchUserProfile();
+//   fetchCards();
+// });
 
 
 
@@ -161,45 +163,48 @@ profilePopup.addEventListener("submit", async (evt) => {
 });
 
 
+  // Promise.all([fetchUserProfile(), fetchCards()])
+  //   .then(([userData, cards]) => {
+  //     if (!userData || !userData._id) {
+  //       console.error("Ошибка: данные профиля загружены некорректно!");
+  //       return;
+  //     }
+  //     cardContainer.addEventListener("click", openFoto); // исправить все 3 обработчика нужно навешивать во время создания карточки, а не с помощью делегирования событий. В будущем может быть 2-3 секции. В итоге нужно будет везде устанавливать одинаковые обработчики. Нужно найти сердечко, картинку и кнопку удаления и навесить на них конкретно свои обработчики во время создания карточки.
+  //     const userId = userData._id;
+  //     namePtofil.textContent = userData.name;
+  //     aboutPtofil.textContent = userData.about;
+  //     avatarImage.style.backgroundImage = `url(${userData.avatar})`;//✅
 
-document.addEventListener("DOMContentLoaded", () => {
+  //     // cardContainer.innerHTML = ""; // Очистка контейнера перед загрузкой новых карточек
+
+  //     cards.forEach((card) => {
+  //       const cardEl = createCard(card, userId);
+  //       if (cardEl) cardContainer.append(cardEl);
+  //     });
+  //   })
+  //   .catch(console.error);
+
+
+  //загружает данные и сразу создаёт карточки
   Promise.all([fetchUserProfile(), fetchCards()])
-    .then(([userData, cards]) => {
-      if (!userData || !userData._id) {
-        console.error("Ошибка: данные профиля загружены некорректно!");
-        return;
-      }
-      cardContainer.addEventListener("click", openFoto);
-      const userId = userData._id;
-      namePtofil.textContent = userData.name;
-      aboutPtofil.textContent = userData.about;
-      avatarImage.style.backgroundImage = `url(${userData.avatar})`;//✅
+  .then(([userData, cards]) => {
+    if (!userData || !userData._id) {
+      console.error("Ошибка: данные профиля загружены некорректно!");
+      return;
+    }
 
-      cardContainer.innerHTML = ""; // Очистка контейнера перед загрузкой новых карточек
-
-      cards.forEach((card) => {
-        const cardEl = createCard(card, userId);
-        if (cardEl) cardContainer.append(cardEl);
-      });
-    })
-    .catch(console.error);
-});
+    const userId = userData._id;
+    namePtofil.textContent = userData.name;
+    aboutPtofil.textContent = userData.about;
+    avatarImage.style.backgroundImage = `url(${userData.avatar})`;
+    cards.forEach((card) => {
+      const cardEl = createCard(card, userId);
+      if (cardEl) cardContainer.append(cardEl);
+    });
+  })
+  .catch((err) => console.error("Ошибка загрузки данных:", err));
 
 
-//  Обработчик кнопки подтверждения удаления
-document.getElementById("confirmDeleteButton").addEventListener("click", () => {
-  if (!currentCardId || !currentCardPopup) {
-    console.error(" Ошибка: нет ID или элемента карточки для удаления!");
-    return;
-  }
-
-  deleteCard(currentCardId)
-    .then(() => {
-      currentCardPopup.remove(); // Удаляем карточку из DOM
-      closeDeletePopup();
-    })
-    .catch((err) => console.error("Ошибка удаления карточки:", err));
-});
   // Обработчик смены аваара
   avatarForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -229,18 +234,6 @@ document.getElementById("confirmDeleteButton").addEventListener("click", () => {
       });
   });
 
-// // Обработчик формы обновления аватара
-// document.querySelector(".submit-avatar").addEventListener("submit", (evt) => {
-//   evt.preventDefault();
-//   const avatarUrl = evt.target.querySelector(".avatar-link").value;
-//   updateAvatar(avatarUrl);
-// });
-
-// Загрузка данных при старте
-// document.addEventListener("DOMContentLoaded", () => {
-//   fetchUserProfile();
-//   fetchCards();
-// });
 
 // Обработчик формы редактирования профиля
 profilePopup.addEventListener("submit", (evt) => {
@@ -259,23 +252,49 @@ cardPopup
     // addNewCard(name, link);
   });
 
-let currentCardId = null;
-let currentCardPopup = null;
+// let currentCardId = null;
+// let currentCardPopup = null;
 
 //  Обработчик кнопки подтверждения удаления
+
+// buttonDelete.addEventListener("click", () => {
+//   if (!currentCardId || !currentCardPopup) {
+//     console.error(" Ошибка: нет ID или элемента карточки для удаления!");
+//     return;
+//   }
+
+//   deleteCard(currentCardId)
+//     .then(() => {
+//       currentCardPopup.remove(); // Удаляем карточку из DOM
+//       closeDeletePopup();
+//     })
+//     .catch((err) => console.error("Ошибка удаления карточки:", err));
+// });
+let currentCardId = null; // Предполагаем, что ID хранится в data-id
+let currentCardElement = null;
+
 document.getElementById("confirmDeleteButton").addEventListener("click", () => {
-  if (!currentCardId || !currentCardPopup) {
-    console.error(" Ошибка: нет ID или элемента карточки для удаления!");
+  console.log("🔎 Проверяем перед удалением:");
+  console.log("window.currentCardId:", window.currentCardId);
+  console.log("window.currentCardElement:", window.currentCardElement);
+
+  if (!window.currentCardId || !window.currentCardElement) {
+    console.error("❌ Ошибка: нет ID или элемента карточки для удаления!");
     return;
   }
 
-  deleteCard(currentCardId)
+  deleteCard(window.currentCardId)
     .then(() => {
-      currentCardPopup.remove(); // Удаляем карточку из DOM
-      closeDeletePopup();
+      window.currentCardElement.remove();
+      closePopup(document.getElementById("delete-popup"));
+
+      // Сброс переменных после удаления
+      window.currentCardId = null;
+      window.currentCardElement = null;
     })
     .catch((err) => console.error("Ошибка удаления карточки:", err));
 });
 
+
 //Если интересно, посмотрите, как можно избавиться от дублирования изменения текста кнопки сабмита, отлов ошибок и очистку формы в каждом запросе  Пример оптимизации обработчика сабмита формы профиля
-// вот это действительно интересно, после сдачи работы посмотрю 
+// вот это действительно интересно, после сдачи работы посмотрю

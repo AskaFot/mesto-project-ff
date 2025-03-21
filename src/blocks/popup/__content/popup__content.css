@@ -9,8 +9,12 @@
   padding: 34px 36px;
 }
 
+.popup__content-delete{
+  min-height: 181px;
+}
+
 .popup-avatar-content{
-  min-height: 330px;
+  min-height: 272px;
 }
 
 @media screen and (max-width: 568px) {
