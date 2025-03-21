@@ -7,7 +7,7 @@ if (!cardTemplate) {
   console.error("Ошибка: #card-template не найден в DOM!");
 }
 
-export function createCard(cardData, currentUser, openDeletePopup, openFoto) {
+export function createCard(cardData, currentUser) {
   const template = cardTemplate.content.cloneNode(true);
   const cardElement = template.querySelector(".card");
   const image = cardElement.querySelector(".card__image");
@@ -23,7 +23,7 @@ export function createCard(cardData, currentUser, openDeletePopup, openFoto) {
   likeCount.textContent = cardData.likes.length;
 
   // обработчик открытия фото при клике на изображение
-  image.addEventListener("click", openFoto);
+  // image.addEventListener("click", (evt) => openFoto(evt));
 
   // Лайк карточки
   if (cardData.likes.some((user) => user._id === currentUser)) {

@@ -57,10 +57,8 @@ cardPopup.addEventListener("submit", (evt) => {
 
   setLoading(evt.submitter, true);
   console.log(" Форма отправлена!"); // Проверяем, вызывается ли `submit` дважды
-
-  const name = evt.target.querySelector(placeInput).value;
-  const link = evt.target.querySelector(linkInput).value;
-
+  const name = placeInput.value;
+  const link = linkInput.value;  
   // console.log(btn.innerText)
 
   addNewCard(name, link)
@@ -68,7 +66,7 @@ cardPopup.addEventListener("submit", (evt) => {
       if (cardData) {
         console.log(" Добавляем карточку:", cardData);
 
-        const newCard = createCard(cardData, cardData.owner._id,openDeletePopup, openFoto);
+        const newCard = createCard(cardData, cardData.owner._id,openDeletePopup);
         if (newCard) {
           cardContainer.prepend(newCard);
         }
@@ -144,13 +142,14 @@ profilePopup.addEventListener("submit", async (evt) => {
       console.error("Ошибка: данные профиля загружены некорректно!");
       return;
     }
+    cardContainer.addEventListener("click", openFoto);
 
     const userId = userData._id;
     namePtofil.textContent = userData.name;
     aboutPtofil.textContent = userData.about;
     avatarImage.style.backgroundImage = `url(${userData.avatar})`;
     cards.forEach((card) => {
-      const cardEl = createCard(card, userId,openFoto);
+      const cardEl = createCard(card, userId);
       if (cardEl) cardContainer.append(cardEl);
     });
   })
@@ -187,16 +186,6 @@ profilePopup.addEventListener("submit", (evt) => {
   const about = evt.target.querySelector(jobInput).value;
   updateUserProfile(name, about);
 });
-
-// Обработчик формы добавления карточки
-cardPopup
-  .addEventListener("submit", (evt) => {
-    evt.preventDefault();
-    const name = evt.target.querySelector(placeInput).value;
-    const link = evt.target.querySelector(linkInput).value;
-    // addNewCard(name, link);
-  });
-
 
 //  Обработчик кнопки подтверждения удаления
 let currentCardId = null; // Предполагаем, что ID хранится в data-id
