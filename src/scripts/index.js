@@ -120,7 +120,7 @@ avatarImage.addEventListener("click", () => {
 // Обновление профиля
 profilePopup.addEventListener("submit", async (evt) => {
   evt.preventDefault();
-  const submitButton = evt.target.querySelector(".popup__button");
+  // const submitButton = evt.target.querySelector(".popup__button");
   setLoading(evt.submitter, true);
 
   try {
@@ -165,7 +165,6 @@ profilePopup.addEventListener("submit", async (evt) => {
     updateAvatar(avatarUrl)
       .then((data) => {
         if (data && data.avatar) {
-          avatarImage.src = data.avatar; // Меняем аватар на странице
           avatarImage.style.backgroundImage = `url("${data.avatar}")`;
         }
         closePopup(avatarPopup);
@@ -178,14 +177,6 @@ profilePopup.addEventListener("submit", async (evt) => {
       });
   });
 
-
-// Обработчик формы редактирования профиля
-profilePopup.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const name = evt.target.querySelector(nameInput).value;
-  const about = evt.target.querySelector(jobInput).value;
-  updateUserProfile(name, about);
-});
 
 //  Обработчик кнопки подтверждения удаления
 let currentCardId = null; // Предполагаем, что ID хранится в data-id

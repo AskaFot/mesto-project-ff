@@ -9,17 +9,15 @@ export function openPopup(popup) {
 
   setTimeout(() => {
     popup.classList.add("popup_is-opened");
-  }, 200);
+  }, 1);
   document.addEventListener("keydown", handleEscape);
   popup.addEventListener("mousedown", setPopupCloseListeners);
 }
 
 export function closePopup(popup) {
-  popup.classList.remove("popup_is-animated");
-
   setTimeout(() => {
     popup.classList.remove("popup_is-opened");
-  }, 300);
+  }, 1);
   document.removeEventListener("keydown", handleEscape);
 }
 

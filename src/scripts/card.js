@@ -22,9 +22,6 @@ export function createCard(cardData, currentUser) {
   image.alt = cardData.name;
   likeCount.textContent = cardData.likes.length;
 
-  // обработчик открытия фото при клике на изображение
-  // image.addEventListener("click", (evt) => openFoto(evt));
-
   // Лайк карточки
   if (cardData.likes.some((user) => user._id === currentUser)) {
     likeButton.classList.add("card__like-button_is-active");
